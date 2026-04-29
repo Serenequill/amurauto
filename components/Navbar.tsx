@@ -20,6 +20,7 @@ const LINKS = [
   { label: "Цены",     href: "#pricing" },
   { label: "О нас",    href: "#about" },
   { label: "Команда",  href: "#teachers" },
+  { label: "Вопросы",  href: "#faq" },
 ];
 
 export default function Navbar() {

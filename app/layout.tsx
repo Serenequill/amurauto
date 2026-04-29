@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import ScrollProgress from "@/components/ScrollProgress";
+import MobileStickyBar from "@/components/MobileStickyBar";
 
 const inter = Inter({
   subsets: ["latin", "cyrillic"],
@@ -27,6 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main className="flex-1">{children}</main>
         <Footer />
         <WhatsAppButton />
+        <MobileStickyBar />
       </body>
 
     </html>

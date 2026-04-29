@@ -9,6 +9,7 @@ import Awards from "@/components/Awards";
 import TrustBar from "@/components/TrustBar";
 import Teachers from "@/components/Teachers";
 import Reviews from "@/components/Reviews";
+import FAQ from "@/components/FAQ";
 import RegistrationForm from "@/components/RegistrationForm";
 import RoadDivider from "@/components/RoadDivider";
 
@@ -34,6 +35,8 @@ export default function Home() {
       <Teachers />
       <RoadDivider />
       <Reviews />
+      <RoadDivider />
+      <FAQ />
       <RegistrationForm />
     </>
   );
