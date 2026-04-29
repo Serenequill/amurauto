@@ -88,19 +88,24 @@ export default function Navbar() {
           <div className="hidden md:flex items-center">
             <a
               href="tel:87776667096"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider text-white transition-all duration-200 hover:scale-105"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200"
               style={{
-                background: "#E11D48",
+                background: "transparent",
+                color: "#E11D48",
+                border: "1.5px solid #E11D48",
                 letterSpacing: "0.08em",
-                boxShadow: "0 4px 14px rgba(225,29,72,0.25)",
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLElement).style.background = "#BE123C";
-                (e.currentTarget as HTMLElement).style.boxShadow = "0 6px 20px rgba(225,29,72,0.35)";
+                const el = e.currentTarget as HTMLElement;
+                el.style.background = "rgba(225,29,72,0.06)";
+                el.style.borderColor = "#BE123C";
+                el.style.color = "#BE123C";
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLElement).style.background = "#E11D48";
-                (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 14px rgba(225,29,72,0.25)";
+                const el = e.currentTarget as HTMLElement;
+                el.style.background = "transparent";
+                el.style.borderColor = "#E11D48";
+                el.style.color = "#E11D48";
               }}
             >
               <Phone size={13} />

@@ -10,7 +10,6 @@ const STATS = [
   { value: "15+",   label: "автомобилей" },
 ];
 
-
 export default function HeroSection() {
   return (
     <section
@@ -26,11 +25,21 @@ export default function HeroSection() {
           opacity: 0.45,
         }}
       />
-      {/* Blobs */}
+
+      {/* ── Background depth blobs ── */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] pointer-events-none"
         style={{ background: "radial-gradient(circle at 80% 20%, rgba(225,29,72,0.06) 0%, transparent 60%)", filter: "blur(50px)" }} />
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] pointer-events-none"
         style={{ background: "radial-gradient(circle at 20% 80%, rgba(99,102,241,0.05) 0%, transparent 60%)", filter: "blur(50px)" }} />
+      {/* Soft red blob behind headline — adds depth, removes sterile-white feel */}
+      <div className="absolute pointer-events-none"
+        style={{
+          top: "15%", left: "-5%",
+          width: "520px", height: "380px",
+          background: "radial-gradient(ellipse at center, rgba(225,29,72,0.05) 0%, transparent 70%)",
+          filter: "blur(60px)",
+        }}
+      />
 
       <div className="relative w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-16">
         <div className="grid grid-cols-12 gap-8 lg:gap-16 items-center lg:min-h-[calc(100vh-5rem)]">
@@ -79,15 +88,25 @@ export default function HeroSection() {
               <span style={{ color: "#0F172A", fontWeight: 600 }}>получения прав</span>
             </motion.p>
 
-            {/* Urgency */}
+            {/* ── Urgency — system notification style ── */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.28 }}
-              className="inline-flex items-center gap-2 mb-8 self-start px-4 py-2 rounded-xl"
-              style={{ background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.2)" }}
+              className="inline-flex items-center gap-2.5 mb-8 self-start px-4 py-2.5 rounded-xl"
+              style={{
+                background: "rgba(255,251,235,0.75)",
+                border: "1px solid rgba(245,158,11,0.22)",
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+                boxShadow: "0 2px 12px rgba(245,158,11,0.08)",
+              }}
             >
-              <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: "#F59E0B" }} />
+              {/* Pulsing live-status dot */}
+              <span className="relative flex items-center justify-center w-2.5 h-2.5 shrink-0">
+                <span className="absolute inline-flex w-full h-full rounded-full opacity-60 animate-ping" style={{ background: "#F59E0B" }} />
+                <span className="relative inline-flex w-2 h-2 rounded-full" style={{ background: "#F59E0B" }} />
+              </span>
               <span className="text-xs font-semibold" style={{ color: "#92400E" }}>
                 Осталось <strong>12 мест</strong> на этот месяц
               </span>
@@ -101,19 +120,23 @@ export default function HeroSection() {
               className="flex flex-wrap gap-3 mb-14"
             >
               <Magnetic>
-                <a href="#register"
-                  className="inline-flex items-center gap-2.5 px-7 py-4 rounded-2xl text-sm font-bold text-white transition-all duration-200"
+                <a
+                  href="#register"
+                  className="inline-flex items-center gap-2.5 px-7 py-4 rounded-2xl text-sm font-bold text-white"
                   style={{
-                    background: "linear-gradient(135deg, #E11D48 0%, #BE123C 100%)",
-                    boxShadow: "0 8px 24px rgba(225,29,72,0.32)",
+                    background: "linear-gradient(135deg, #FF2D61 0%, #E11D48 50%, #BE123C 100%)",
+                    boxShadow: "0 8px 20px rgba(225,29,72,0.30)",
+                    transition: "transform 0.2s ease, box-shadow 0.2s ease",
                   }}
                   onMouseEnter={(e) => {
                     const el = e.currentTarget as HTMLElement;
-                    el.style.boxShadow = "0 14px 36px rgba(225,29,72,0.42)";
+                    el.style.transform = "scale(1.05)";
+                    el.style.boxShadow = "0 12px 28px rgba(225,29,72,0.42)";
                   }}
                   onMouseLeave={(e) => {
                     const el = e.currentTarget as HTMLElement;
-                    el.style.boxShadow = "0 8px 24px rgba(225,29,72,0.32)";
+                    el.style.transform = "scale(1)";
+                    el.style.boxShadow = "0 8px 20px rgba(225,29,72,0.30)";
                   }}
                 >
                   Записаться на обучение
@@ -121,12 +144,13 @@ export default function HeroSection() {
                 </a>
               </Magnetic>
               <a href="tel:87776667096"
-                className="inline-flex items-center gap-2.5 px-7 py-4 rounded-2xl text-sm font-semibold transition-all duration-200"
+                className="inline-flex items-center gap-2.5 px-7 py-4 rounded-2xl text-sm font-semibold"
                 style={{
                   background: "#FFFFFF",
                   color: "#0F172A",
                   border: "1.5px solid #E2E8F0",
                   boxShadow: "0 2px 12px rgba(0,0,0,0.05)",
+                  transition: "transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease",
                 }}
                 onMouseEnter={(e) => {
                   const el = e.currentTarget as HTMLElement;
@@ -146,20 +170,33 @@ export default function HeroSection() {
               </a>
             </motion.div>
 
-            {/* Social proof */}
+            {/* ── Stats with dividers ── */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.7, delay: 0.5 }}
-              className="flex items-center gap-8 pt-8"
+              className="flex items-center gap-6 pt-8"
               style={{ borderTop: "1px solid #F1F5F9" }}
             >
               {STATS.map((s, i) => (
-                <div key={s.label}>
-                  <div className="text-2xl font-black" style={{ color: i === 0 ? "#E11D48" : "#0F172A", letterSpacing: "-0.03em" }}>
-                    {s.value}
+                <div key={s.label} className="flex items-center gap-6">
+                  {i > 0 && (
+                    <div style={{ width: "1px", height: "20px", background: "#E2E8F0", flexShrink: 0 }} />
+                  )}
+                  <div>
+                    <div
+                      className="text-3xl font-black"
+                      style={{ color: i === 0 ? "#E11D48" : "#0F172A", letterSpacing: "-0.03em" }}
+                    >
+                      {s.value}
+                    </div>
+                    <div
+                      className="text-[10px] font-bold uppercase tracking-widest mt-0.5"
+                      style={{ color: "#94A3B8", letterSpacing: "0.12em" }}
+                    >
+                      {s.label}
+                    </div>
                   </div>
-                  <div className="text-xs font-medium mt-0.5" style={{ color: "#94A3B8" }}>{s.label}</div>
                 </div>
               ))}
             </motion.div>
@@ -185,7 +222,6 @@ export default function HeroSection() {
                   padding: "24px",
                 }}
               >
-                {/* Card header */}
                 <div className="flex items-center justify-between mb-5">
                   <div>
                     <p className="text-[10px] font-bold uppercase tracking-widest mb-0.5" style={{ color: "#94A3B8" }}>Прогресс ученика</p>
@@ -197,7 +233,6 @@ export default function HeroSection() {
                   </span>
                 </div>
 
-                {/* Overall progress */}
                 <div className="mb-5">
                   <div className="flex justify-between mb-2">
                     <span className="text-xs font-medium" style={{ color: "#64748B" }}>Общий прогресс</span>
@@ -213,7 +248,6 @@ export default function HeroSection() {
                   </div>
                 </div>
 
-                {/* Stats row */}
                 <div className="grid grid-cols-3 gap-3">
                   {[
                     { label: "Теория", value: "28 ч", done: true },
@@ -228,7 +262,6 @@ export default function HeroSection() {
                   ))}
                 </div>
 
-                {/* Next lesson */}
                 <div className="mt-4 flex items-center gap-3 px-4 py-3 rounded-2xl"
                   style={{ background: "rgba(225,29,72,0.05)", border: "1px solid rgba(225,29,72,0.1)" }}>
                   <div className="w-2 h-2 rounded-full animate-pulse shrink-0" style={{ background: "#E11D48" }} />
@@ -264,7 +297,6 @@ export default function HeroSection() {
                   ].map((step, i) => (
                     <div key={step.label} className="flex items-center flex-1">
                       <div className="flex flex-col items-center flex-1">
-                        {/* Circle */}
                         <div className="w-9 h-9 rounded-full flex items-center justify-center mb-2 transition-all"
                           style={{
                             background: step.done ? "#16A34A" : step.active ? "#E11D48" : "#F1F5F9",
@@ -283,7 +315,6 @@ export default function HeroSection() {
                         </p>
                         <p className="text-[10px] text-center mt-0.5" style={{ color: "#CBD5E1" }}>{step.sub}</p>
                       </div>
-                      {/* Connector */}
                       {i < 2 && (
                         <div className="h-0.5 w-6 shrink-0 rounded-full mx-1"
                           style={{ background: i === 0 ? "#16A34A" : "#E5E7EB" }} />
