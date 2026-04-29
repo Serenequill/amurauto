@@ -83,7 +83,7 @@ export default function RegistrationForm() {
             Записаться на обучение
           </h2>
           <p className="text-sm" style={{ color: "#9CA3AF" }}>
-            Оставьте заявку — перезвоним в течение 15 минут
+            Выберите филиал и формат обучения — ответим в WhatsApp
           </p>
         </div>
 
@@ -97,7 +97,7 @@ export default function RegistrationForm() {
               </div>
               <h3 className="text-2xl font-black mb-2" style={{ color: "#111827" }}>Заявка принята!</h3>
               <p className="text-sm mb-6" style={{ color: "#9CA3AF" }}>
-                Мы свяжемся с вами в течение 15 минут.
+                Менеджер ответит вам в WhatsApp.
               </p>
               <div className="inline-block text-left px-5 py-4 rounded-sm mb-6 space-y-1.5"
                 style={{ background: "#F9FAFB", border: "1px solid #F1F5F9" }}>
