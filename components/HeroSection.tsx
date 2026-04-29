@@ -15,7 +15,7 @@ export default function HeroSection() {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex items-center overflow-hidden pt-16"
+      className="relative lg:min-h-screen flex items-center overflow-hidden pt-16"
       style={{ background: "linear-gradient(160deg, #ffffff 0%, #fafbff 60%, #fff5f7 100%)" }}
     >
       {/* Dot grid */}
@@ -33,7 +33,7 @@ export default function HeroSection() {
         style={{ background: "radial-gradient(circle at 20% 80%, rgba(99,102,241,0.05) 0%, transparent 60%)", filter: "blur(50px)" }} />
 
       <div className="relative w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-16">
-        <div className="grid grid-cols-12 gap-8 lg:gap-16 items-center min-h-[calc(100vh-5rem)]">
+        <div className="grid grid-cols-12 gap-8 lg:gap-16 items-center lg:min-h-[calc(100vh-5rem)]">
 
           {/* ══ LEFT — 6 cols ══ */}
           <div className="col-span-12 lg:col-span-6 flex flex-col justify-center">

@@ -12,11 +12,11 @@ export default function WhatsAppButton() {
   };
 
   return (
-    <div className="fixed bottom-6 right-5 z-[999] flex flex-col items-end gap-3">
-      {/* Tooltip bubble */}
+    <div className="fixed bottom-4 sm:bottom-6 right-4 sm:right-5 z-[999] flex flex-col items-end gap-3">
+      {/* Tooltip bubble — hidden on mobile */}
       {tooltip && (
         <div
-          className="relative flex items-center gap-2 px-4 py-3 rounded-2xl text-sm font-medium shadow-lg animate-fade-in-up"
+          className="relative hidden sm:flex items-center gap-2 px-4 py-3 rounded-2xl text-sm font-medium shadow-lg animate-fade-in-up"
           style={{
             background: "#fff",
             border: "1.5px solid #e5e7eb",
