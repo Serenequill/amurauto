@@ -95,7 +95,7 @@ export default function PddTrainer() {
   const levelColor = score >= 5 ? "#16a34a"  : score >= 3 ? "#d97706"    : "#E11D48";
 
   return (
-    <section id="signs" className="relative py-20 overflow-hidden" style={{ background: "#F9FAFB" }}>
+    <section id="signs" className="relative py-12 sm:py-20 overflow-hidden" style={{ background: "#F9FAFB" }}>
       <div className="absolute top-1/2 left-1/2 w-[500px] h-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none"
         style={{ background: "radial-gradient(circle, rgba(225,29,72,0.04) 0%, transparent 70%)" }} />
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">

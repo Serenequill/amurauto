@@ -10,7 +10,7 @@ const STATS = [
 
 export default function About() {
   return (
-    <section id="about" className="py-24" style={{ background: "#F9FAFB" }}>
+    <section id="about" className="py-12 sm:py-24" style={{ background: "#F9FAFB" }}>
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
 

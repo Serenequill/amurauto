@@ -72,7 +72,7 @@ export default function RegistrationForm() {
   });
 
   return (
-    <section id="register" className="py-24" style={{ background: "#FFFFFF" }}>
+    <section id="register" className="py-12 sm:py-24" style={{ background: "#FFFFFF" }}>
       <div className="max-w-2xl mx-auto px-6 sm:px-8">
 
         {/* Header */}

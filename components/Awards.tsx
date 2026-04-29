@@ -127,7 +127,7 @@ export default function Awards() {
 
   return (
     <>
-      <section id="awards" className="py-24" style={{ background: "#F9FAFB" }}>
+      <section id="awards" className="py-12 sm:py-24" style={{ background: "#F9FAFB" }}>
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
 
           {/* Header */}

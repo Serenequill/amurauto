@@ -20,7 +20,7 @@ export default function Reviews() {
   const visible = [0, 1, 2].map((o) => REVIEWS[(current + o) % REVIEWS.length]);
 
   return (
-    <section id="reviews" className="py-24" style={{ background: "#F9FAFB" }}>
+    <section id="reviews" className="py-12 sm:py-24" style={{ background: "#F9FAFB" }}>
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
 
         {/* Header */}

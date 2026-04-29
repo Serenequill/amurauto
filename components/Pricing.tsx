@@ -50,7 +50,7 @@ const PLANS = [
 
 export default function Pricing() {
   return (
-    <section id="pricing" className="py-24" style={{ background: "#FFFFFF" }}>
+    <section id="pricing" className="py-12 sm:py-24" style={{ background: "#FFFFFF" }}>
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
 
         {/* Header */}

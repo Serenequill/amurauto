@@ -16,7 +16,7 @@ export default function WhatsAppButton() {
       {/* Tooltip bubble — hidden on mobile */}
       {tooltip && (
         <div
-          className="relative hidden sm:flex items-center gap-2 px-4 py-3 rounded-2xl text-sm font-medium shadow-lg animate-fade-in-up"
+          className="wa-tooltip relative flex items-center gap-2 px-4 py-3 rounded-2xl text-sm font-medium shadow-lg animate-fade-in-up"
           style={{
             background: "#fff",
             border: "1.5px solid #e5e7eb",
