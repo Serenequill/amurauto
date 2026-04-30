@@ -1,22 +1,8 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Phone, ExternalLink, Clock, Navigation, ChevronLeft, ChevronRight } from "lucide-react";
-
-/* ── Car SVG for hover animation ── */
-function CarIcon({ color = "#E11D48" }: { color?: string }) {
-  return (
-    <svg viewBox="0 0 48 24" width="36" height="18" fill="none" aria-hidden>
-      <rect x="6" y="8" width="36" height="12" rx="3" fill={color} />
-      <path d="M10 8 L14 2 H34 L38 8" fill={color} opacity="0.8" />
-      <circle cx="13" cy="21" r="3.5" fill="#111" />
-      <circle cx="35" cy="21" r="3.5" fill="#111" />
-      <rect x="14" y="3" width="8" height="5" rx="1" fill="rgba(255,255,255,0.35)" />
-      <rect x="26" y="3" width="8" height="5" rx="1" fill="rgba(255,255,255,0.35)" />
-      <rect x="36" y="11" width="5" height="3" rx="1" fill="#fbbf24" opacity="0.9" />
-    </svg>
-  );
-}
 
 /* ─── Branch data ─── */
 const BRANCHES = [
@@ -72,101 +58,199 @@ const BRANCHES = [
 
 type Branch = (typeof BRANCHES)[0];
 
-// Yandex Maps widget — free, no API key, works in iframes, great CIS coverage.
-// 2GIS blocks iframe embedding via X-Frame-Options on their main site.
-// "Открыть в 2ГИС" buttons below still deep-link to 2GIS in a new tab.
-// Center = average of all 6 branch coords; zoom 11 fits the spread
-const OVERVIEW_SRC =
-  "https://yandex.kz/map-widget/v1/?ll=76.8943%2C43.269&z=11&l=map";
+const OVERVIEW_SRC = "https://yandex.kz/map-widget/v1/?ll=76.8943%2C43.269&z=11&l=map";
 
 function getBranchSrc(b: Branch) {
-  // pm2rdm = red drop-pin marker
   return `https://yandex.kz/map-widget/v1/?ll=${b.lng}%2C${b.lat}&z=16&pt=${b.lng}%2C${b.lat},pm2rdm&l=map`;
 }
 
-/* ─── 2GIS Map block (shared between layouts) ─── */
+/* ─── Map block ─── */
 function MapBlock({
   activeBranch,
-  mapLoading,
-  onLoad,
   mapKey,
   mapSrc,
-  isMobile,
+  height,
 }: {
   activeBranch: Branch | undefined;
-  mapLoading: boolean;
-  onLoad: () => void;
   mapKey: string | number;
   mapSrc: string;
-  isMobile?: boolean;
+  height: string;
 }) {
+  const coords = activeBranch
+    ? `${activeBranch.lat.toFixed(4)}°N · ${activeBranch.lng.toFixed(4)}°E`
+    : `43.2567°N · 76.9286°E`;
+
   return (
-    <div
-      className="relative overflow-hidden"
-      style={{
-        border: "2px solid #E11D48",
-        borderRadius: isMobile ? "16px" : "16px",
-        boxShadow: "0 8px 32px rgba(225,29,72,0.14)",
-        height: isMobile ? "280px" : "520px",
-      }}
-    >
-      {/* Red header bar */}
+    <div>
       <div
-        className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-3 py-2"
-        style={{ background: "#E11D48", height: "36px" }}
+        className="relative overflow-hidden"
+        style={{
+          borderRadius: "2.5rem",
+          border: "2px solid rgba(225,29,72,0.12)",
+          boxShadow: "0 8px 40px rgba(0,0,0,0.07), inset 0 1px 0 rgba(255,255,255,0.9)",
+          height,
+          background: "#F9FAFB",
+        }}
       >
-        <div className="flex items-center gap-1.5">
-          <MapPin size={13} color="#fff" />
-          <span className="text-xs font-bold text-white tracking-wide truncate">
-            {activeBranch ? `Филиал — ${activeBranch.name}` : "Все филиалы · Алматы"}
-          </span>
-        </div>
-        <span className="text-xs font-semibold shrink-0" style={{ color: "rgba(255,255,255,0.7)" }}>
-          Я.Карты
-        </span>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={String(mapKey)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.35, ease: "easeInOut" }}
+            className="absolute inset-0"
+          >
+            <iframe
+              src={mapSrc}
+              width="100%"
+              height="100%"
+              style={{ border: "none", display: "block" }}
+              allowFullScreen
+              title={activeBranch ? `Филиал ${activeBranch.name}` : "Все филиалы АмурАвто"}
+            />
+          </motion.div>
+        </AnimatePresence>
       </div>
 
-      {/* Loading overlay */}
-      {mapLoading && (
-        <div
-          className="absolute inset-0 z-20 flex items-center justify-center"
-          style={{ background: "#fef2f4", top: "36px" }}
-        >
-          <div className="text-center">
-            <div
-              className="w-9 h-9 rounded-full border-2 border-t-transparent mx-auto mb-2"
-              style={{
-                borderColor: "#E11D48",
-                borderTopColor: "transparent",
-                animation: "spin 0.8s linear infinite",
-              }}
-            />
-            <p className="text-xs font-medium" style={{ color: "#E11D48" }}>
-              Загружаем карту…
-            </p>
-          </div>
+      {/* Decorative coordinates */}
+      <div className="flex items-center justify-between mt-3 px-1">
+        <div className="flex items-center gap-2">
+          <div className="w-1.5 h-1.5 rounded-full" style={{ background: "#E11D48" }} />
+          <span className="mono text-[10px]" style={{ color: "#9CA3AF" }}>
+            {activeBranch ? `ФИЛИАЛ · ${activeBranch.name.toUpperCase()}` : "АЛМАТЫ · 6 ФИЛИАЛОВ"}
+          </span>
         </div>
-      )}
-
-      {/* iframe */}
-      <iframe
-        key={String(mapKey)}
-        src={mapSrc}
-        width="100%"
-        style={{ border: "none", display: "block", marginTop: "36px", height: "calc(100% - 36px)" }}
-        allowFullScreen
-        title={activeBranch ? `Филиал ${activeBranch.name}` : "Все филиалы АмурАвто"}
-        onLoad={onLoad}
-      />
+        <span className="mono text-[9px]" style={{ color: "#E2E8F0" }}>{coords}</span>
+      </div>
     </div>
+  );
+}
+
+/* ─── Branch card (desktop) ─── */
+function BranchCard({
+  branch,
+  isActive,
+  onSelect,
+}: {
+  branch: Branch;
+  isActive: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <motion.button
+      onClick={onSelect}
+      animate={{ y: isActive ? -6 : 0 }}
+      whileHover={{ y: isActive ? -6 : -2 }}
+      transition={{ duration: 0.22, ease: "easeOut" }}
+      className="w-full text-left relative overflow-hidden"
+      style={{
+        background: "#FFFFFF",
+        borderRadius: "1.5rem",
+        border: "1px solid #F1F5F9",
+        borderLeft: isActive ? "4px solid #DC2626" : "4px solid transparent",
+        boxShadow: isActive
+          ? "0 20px 48px rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.06)"
+          : "0 1px 4px rgba(0,0,0,0.05)",
+        padding: "1.1rem 1.25rem 1.1rem 1rem",
+        transition: "box-shadow 0.25s ease, border-left-color 0.2s ease",
+      }}
+      onMouseEnter={(e) => {
+        if (!isActive) {
+          (e.currentTarget as HTMLElement).style.boxShadow =
+            "0 8px 24px rgba(0,0,0,0.09), 0 2px 8px rgba(0,0,0,0.05)";
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (!isActive) {
+          (e.currentTarget as HTMLElement).style.boxShadow = "0 1px 4px rgba(0,0,0,0.05)";
+        }
+      }}
+    >
+      {/* Tag + name row */}
+      <div className="flex items-start justify-between gap-3 mb-2">
+        <div className="flex-1 min-w-0">
+          <span
+            className="text-[10px] font-black uppercase tracking-widest block mb-0.5"
+            style={{ color: isActive ? "#DC2626" : "#9CA3AF" }}
+          >
+            Филиал {branch.tag}
+          </span>
+          <p className="font-black text-base leading-tight" style={{ color: "#111827" }}>
+            {branch.name}
+          </p>
+        </div>
+        <div
+          className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
+          style={{
+            background: isActive ? "rgba(220,38,38,0.08)" : "#F9FAFB",
+            border: isActive ? "1px solid rgba(220,38,38,0.2)" : "1px solid #F1F5F9",
+          }}
+        >
+          {isActive
+            ? <Navigation size={14} style={{ color: "#DC2626" }} />
+            : <MapPin size={14} style={{ color: "#9CA3AF", opacity: 0.25 }} />}
+        </div>
+      </div>
+
+      {/* Address */}
+      <p className="text-xs leading-snug mb-3" style={{ color: "#6B7280" }}>
+        {branch.address}
+      </p>
+
+      {/* Expanded info when active */}
+      <AnimatePresence initial={false}>
+        {isActive && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+            style={{ overflow: "hidden" }}
+          >
+            <div
+              className="pt-3 space-y-2"
+              style={{ borderTop: "1px solid #F1F5F9" }}
+            >
+              <div className="flex items-center gap-2">
+                <Phone size={12} style={{ color: "#9CA3AF" }} />
+                <a
+                  href={`tel:${branch.phone.replace(/\D/g, "")}`}
+                  onClick={(e) => e.stopPropagation()}
+                  className="text-xs font-semibold transition-colors"
+                  style={{ color: "#374151" }}
+                  onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#DC2626")}
+                  onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "#374151")}
+                >
+                  {branch.phone}
+                </a>
+              </div>
+              <div className="flex items-center gap-2">
+                <Clock size={12} style={{ color: "#9CA3AF" }} />
+                <span className="text-xs" style={{ color: "#6B7280" }}>{branch.hours}</span>
+              </div>
+              <a
+                href={branch.twoGis}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="inline-flex items-center gap-1.5 text-xs font-semibold"
+                style={{ color: "#DC2626" }}
+              >
+                <ExternalLink size={11} />
+                Открыть в 2ГИС
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.button>
   );
 }
 
 /* ─── Main section ─── */
 export default function BranchesSection() {
-  const [activeId, setActiveId]   = useState<number | null>(null);
-  const [mapLoading, setMapLoading] = useState(false);
-  const [hoverId, setHoverId]       = useState<number | null>(null);
+  const [activeId, setActiveId] = useState<number | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const activeBranch = BRANCHES.find((b) => b.id === activeId);
@@ -174,401 +258,220 @@ export default function BranchesSection() {
   const mapKey = activeId ?? "overview";
 
   const select = (id: number) => {
-    setMapLoading(true);
     setActiveId((prev) => (prev === id ? null : id));
-    // scroll horizontal list so active card is visible on mobile
-    const el = document.getElementById(`branch-card-${id}`);
+    const el = document.getElementById(`branch-mob-${id}`);
     el?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
   };
 
   const scrollCards = (dir: "left" | "right") => {
-    if (!scrollRef.current) return;
-    scrollRef.current.scrollBy({ left: dir === "left" ? -280 : 280, behavior: "smooth" });
+    scrollRef.current?.scrollBy({ left: dir === "left" ? -280 : 280, behavior: "smooth" });
   };
 
-  const mapProps = { activeBranch, mapLoading, onLoad: () => setMapLoading(false), mapKey, mapSrc };
+  const mapProps = { activeBranch, mapKey, mapSrc };
 
   return (
-    <section id="branches" className="py-16 sm:py-20" style={{ background: "#fff" }}>
-      {/* ── Header ── */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8 sm:mb-12">
-          <span
-            className="inline-block text-sm font-semibold uppercase tracking-widest mb-3 px-3 py-1 rounded-full"
-            style={{ color: "#E11D48", background: "rgba(225,29,72,0.08)" }}
+    <section id="branches" className="py-12 sm:py-24" style={{ background: "#FFFFFF" }}>
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+
+        {/* ── Header ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mb-10 sm:mb-14"
+        >
+          <div className="label-tag mb-5">Адреса</div>
+          <h2
+            className="font-black leading-tight"
+            style={{ fontSize: "clamp(2.2rem, 5vw, 3.2rem)", color: "#111827", letterSpacing: "-0.025em" }}
           >
-            Адреса
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-black mb-3" style={{ color: "#111827" }}>
             6 филиалов{" "}
-            <span style={{ color: "#E11D48" }}>в Алматы</span>
+            <span style={{ color: "#DC2626" }}>в Алматы</span>
           </h2>
-          <p className="text-sm sm:text-base" style={{ color: "#6b7280" }}>
-            Нажмите на адрес — карта переместится на нужный филиал
+          <p className="text-sm mt-3" style={{ color: "#9CA3AF" }}>
+            Нажмите на карточку — карта переместится на нужный филиал
           </p>
-        </div>
-      </div>
+        </motion.div>
 
-      {/* ══════════════════════════════════
-          MOBILE LAYOUT  (< lg)
-      ══════════════════════════════════ */}
-      <div className="lg:hidden">
-        {/* Map — full width, breaks out of padding */}
-        <div className="px-4 sm:px-6 mb-5">
-          <MapBlock {...mapProps} isMobile />
-          <p className="text-xs text-center mt-2" style={{ color: "#9ca3af" }}>
-            {activeBranch
-              ? `📍 ${activeBranch.lat.toFixed(4)}°N, ${activeBranch.lng.toFixed(4)}°E`
-              : "📍 Центр Алматы · выберите филиал ниже"}
-          </p>
-        </div>
+        {/* ══════════════════════════════════
+            DESKTOP (lg+)
+        ══════════════════════════════════ */}
+        <div className="hidden lg:grid grid-cols-5 gap-8 items-start">
 
-        {/* Scroll hint + arrows */}
-        <div className="flex items-center justify-between px-4 sm:px-6 mb-3">
-          <p className="text-xs font-medium" style={{ color: "#9ca3af" }}>
-            Прокрутите →
-          </p>
-          <div className="flex gap-2">
-            <button
-              onClick={() => scrollCards("left")}
-              className="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
-              style={{ border: "1.5px solid #e5e7eb", color: "#9ca3af" }}
-              aria-label="Влево"
-            >
-              <ChevronLeft size={16} />
-            </button>
-            <button
-              onClick={() => scrollCards("right")}
-              className="w-8 h-8 rounded-full flex items-center justify-center transition-colors text-white"
-              style={{ background: "#E11D48" }}
-              aria-label="Вправо"
-            >
-              <ChevronRight size={16} />
-            </button>
+          {/* Cards column — gap-6 between cards */}
+          <div className="col-span-2 space-y-6">
+            {BRANCHES.map((branch) => (
+              <BranchCard
+                key={branch.id}
+                branch={branch}
+                isActive={activeId === branch.id}
+                onSelect={() => select(branch.id)}
+              />
+            ))}
+
+            {activeId !== null && (
+              <motion.button
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                onClick={() => setActiveId(null)}
+                className="w-full py-2.5 rounded-2xl text-xs font-semibold transition-all"
+                style={{ color: "#9CA3AF", border: "1px solid #F1F5F9" }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLElement).style.color = "#DC2626";
+                  (e.currentTarget as HTMLElement).style.borderColor = "rgba(220,38,38,0.3)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLElement).style.color = "#9CA3AF";
+                  (e.currentTarget as HTMLElement).style.borderColor = "#F1F5F9";
+                }}
+              >
+                ← Показать все филиалы
+              </motion.button>
+            )}
+          </div>
+
+          {/* Map column */}
+          <div className="col-span-3 sticky top-24">
+            <MapBlock {...mapProps} height="540px" />
           </div>
         </div>
 
-        {/* Horizontal scroll cards */}
-        <div
-          ref={scrollRef}
-          className="flex gap-3 overflow-x-auto pb-4 px-4 sm:px-6"
-          style={{ scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch", scrollbarWidth: "none" }}
-        >
-          {BRANCHES.map((branch) => {
-            const isActive = activeId === branch.id;
-            return (
+        {/* ══════════════════════════════════
+            MOBILE (< lg)
+        ══════════════════════════════════ */}
+        <div className="lg:hidden">
+          {/* Map */}
+          <div className="mb-6">
+            <MapBlock {...mapProps} height="280px" />
+          </div>
+
+          {/* Scroll arrows */}
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-medium" style={{ color: "#9CA3AF" }}>
+              Прокрутите →
+            </span>
+            <div className="flex gap-2">
               <button
-                key={branch.id}
-                id={`branch-card-${branch.id}`}
-                onClick={() => select(branch.id)}
-                className="shrink-0 text-left rounded-2xl p-4 transition-all"
-                style={{
-                  width: "260px",
-                  scrollSnapAlign: "start",
-                  background: isActive ? "#E11D48" : "#fff",
-                  border: `2px solid ${isActive ? "#E11D48" : "#f3f4f6"}`,
-                  boxShadow: isActive
-                    ? "0 6px 20px rgba(225,29,72,0.25)"
-                    : "0 1px 6px rgba(0,0,0,0.07)",
-                }}
+                onClick={() => scrollCards("left")}
+                className="w-8 h-8 rounded-full flex items-center justify-center"
+                style={{ border: "1px solid #F1F5F9", color: "#9CA3AF" }}
+                aria-label="Влево"
               >
-                {/* Tag + name */}
-                <div className="flex items-center justify-between mb-2.5">
-                  <div>
-                    <span
-                      className="text-[10px] font-black uppercase tracking-widest block"
-                      style={{ color: isActive ? "rgba(255,255,255,0.65)" : "#E11D48" }}
-                    >
-                      Филиал {branch.tag}
-                    </span>
-                    <span
-                      className="font-black text-base leading-tight"
-                      style={{ color: isActive ? "#fff" : "#111827" }}
-                    >
-                      {branch.name}
-                    </span>
-                  </div>
-                  <div
-                    className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
-                    style={{ background: isActive ? "rgba(255,255,255,0.2)" : "rgba(225,29,72,0.08)" }}
-                  >
-                    {isActive
-                      ? <Navigation size={15} color="#fff" />
-                      : <MapPin size={15} style={{ color: "#E11D48" }} />}
-                  </div>
-                </div>
-
-                {/* Details */}
-                <div className="space-y-1.5">
-                  <div className="flex items-start gap-1.5">
-                    <MapPin size={12} className="shrink-0 mt-0.5" style={{ color: isActive ? "rgba(255,255,255,0.6)" : "#9ca3af" }} />
-                    <span className="text-xs leading-snug" style={{ color: isActive ? "rgba(255,255,255,0.85)" : "#374151" }}>
-                      {branch.address}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Phone size={12} className="shrink-0" style={{ color: isActive ? "rgba(255,255,255,0.6)" : "#9ca3af" }} />
-                    <span className="text-xs font-medium" style={{ color: isActive ? "#fff" : "#374151" }}>
-                      {branch.phone}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Clock size={12} className="shrink-0" style={{ color: isActive ? "rgba(255,255,255,0.6)" : "#9ca3af" }} />
-                    <span className="text-xs" style={{ color: isActive ? "rgba(255,255,255,0.75)" : "#6b7280" }}>
-                      {branch.hours}
-                    </span>
-                  </div>
-                </div>
-
-                {/* 2GIS link when active */}
-                {isActive && (
-                  <a
-                    href={branch.twoGis}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                    className="inline-flex items-center gap-1 text-xs font-semibold mt-3 pt-3"
-                    style={{
-                      color: "#fff",
-                      borderTop: "1px solid rgba(255,255,255,0.2)",
-                      display: "flex",
-                      textDecoration: "underline",
-                      textUnderlineOffset: "2px",
-                    }}
-                  >
-                    <ExternalLink size={11} />
-                    Открыть в 2ГИС
-                  </a>
-                )}
+                <ChevronLeft size={15} />
               </button>
-            );
-          })}
+              <button
+                onClick={() => scrollCards("right")}
+                className="w-8 h-8 rounded-full flex items-center justify-center text-white"
+                style={{ background: "#DC2626" }}
+                aria-label="Вправо"
+              >
+                <ChevronRight size={15} />
+              </button>
+            </div>
+          </div>
 
-          {/* Reset card */}
-          {activeId !== null && (
-            <button
-              onClick={() => { setActiveId(null); setMapLoading(true); }}
-              className="shrink-0 rounded-2xl p-4 flex flex-col items-center justify-center gap-2 text-sm font-medium"
-              style={{
-                width: "140px",
-                scrollSnapAlign: "start",
-                border: "2px dashed #e5e7eb",
-                color: "#9ca3af",
-                background: "#fafafa",
-              }}
-            >
-              <MapPin size={20} style={{ color: "#d1d5db" }} />
-              Все<br />филиалы
-            </button>
-          )}
-        </div>
-
-        {/* Scroll dots indicator */}
-        <div className="flex justify-center gap-1.5 mt-2 px-4">
-          {BRANCHES.map((b) => (
-            <button
-              key={b.id}
-              onClick={() => select(b.id)}
-              className="rounded-full transition-all"
-              style={{
-                width: activeId === b.id ? "20px" : "6px",
-                height: "6px",
-                background: activeId === b.id ? "#E11D48" : "#e5e7eb",
-              }}
-              aria-label={b.name}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* ══════════════════════════════════
-          DESKTOP LAYOUT  (lg+)
-      ══════════════════════════════════ */}
-      <div className="hidden lg:block max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-5 gap-6 items-start">
-
-          {/* Branch list (left) */}
-          <div className="col-span-2 space-y-3">
+          {/* Horizontal scroll */}
+          <div
+            ref={scrollRef}
+            className="flex gap-3 overflow-x-auto pb-4"
+            style={{ scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch", scrollbarWidth: "none" }}
+          >
             {BRANCHES.map((branch) => {
               const isActive = activeId === branch.id;
               return (
                 <button
                   key={branch.id}
+                  id={`branch-mob-${branch.id}`}
                   onClick={() => select(branch.id)}
-                  className="w-full text-left rounded-2xl p-5 transition-all"
+                  className="shrink-0 text-left"
                   style={{
-                    background: isActive ? "#E11D48" : "#fff",
-                    border: `2px solid ${isActive ? "#E11D48" : "#f3f4f6"}`,
+                    width: 250,
+                    scrollSnapAlign: "start",
+                    background: "#FFFFFF",
+                    borderRadius: "1.5rem",
+                    border: "1px solid #F1F5F9",
+                    borderLeft: isActive ? "4px solid #DC2626" : "4px solid transparent",
+                    padding: "1rem",
                     boxShadow: isActive
-                      ? "0 8px 24px rgba(225,29,72,0.25)"
-                      : "0 1px 4px rgba(0,0,0,0.06)",
-                    transition: "all 0.2s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    setHoverId(branch.id);
-                    if (!isActive) {
-                      (e.currentTarget as HTMLElement).style.borderColor = "rgba(225,29,72,0.4)";
-                      (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 16px rgba(225,29,72,0.12)";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    setHoverId(null);
-                    if (!isActive) {
-                      (e.currentTarget as HTMLElement).style.borderColor = "#f3f4f6";
-                      (e.currentTarget as HTMLElement).style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)";
-                    }
+                      ? "0 12px 32px rgba(0,0,0,0.1)"
+                      : "0 1px 6px rgba(0,0,0,0.05)",
+                    transition: "all 0.22s ease",
                   }}
                 >
-                  {/* Car animation strip */}
-                  <div className="relative h-5 mb-2 overflow-hidden rounded-md" style={{ background: isActive ? "rgba(255,255,255,0.1)" : "rgba(225,29,72,0.04)" }}>
-                    {hoverId === branch.id && (
-                      <span className="absolute top-0.5 animate-car-drive">
-                        <CarIcon color={isActive ? "#fff" : "#E11D48"} />
-                      </span>
-                    )}
-                    {/* Dashed road line */}
-                    <div className="absolute inset-0 flex items-center px-2">
-                      <div className="w-full" style={{ borderTop: `2px dashed ${isActive ? "rgba(255,255,255,0.2)" : "rgba(225,29,72,0.15)"}` }} />
-                    </div>
+                  <span
+                    className="text-[10px] font-black uppercase tracking-widest block mb-0.5"
+                    style={{ color: isActive ? "#DC2626" : "#9CA3AF" }}
+                  >
+                    Филиал {branch.tag}
+                  </span>
+                  <p className="font-black text-sm leading-tight mb-2" style={{ color: "#111827" }}>
+                    {branch.name}
+                  </p>
+                  <p className="text-xs leading-snug mb-2" style={{ color: "#6B7280" }}>
+                    {branch.address}
+                  </p>
+                  <div className="flex items-center gap-1.5">
+                    <Phone size={11} style={{ color: "#9CA3AF" }} />
+                    <span className="text-xs font-medium" style={{ color: "#374151" }}>
+                      {branch.phone}
+                    </span>
                   </div>
-
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span
-                          className="text-[10px] font-black uppercase tracking-widest"
-                          style={{ color: isActive ? "rgba(255,255,255,0.7)" : "#E11D48" }}
-                        >
-                          Филиал {branch.tag}
-                        </span>
-                        {isActive && (
-                          <span
-                            className="text-[9px] px-2 py-0.5 rounded-full font-bold"
-                            style={{ background: "rgba(255,255,255,0.2)", color: "#fff" }}
-                          >
-                            НА КАРТЕ
-                          </span>
-                        )}
-                      </div>
-                      <p className="font-black text-base leading-tight mb-1" style={{ color: isActive ? "#fff" : "#111827" }}>
-                        {branch.name}
-                      </p>
-                      <p className="text-sm" style={{ color: isActive ? "rgba(255,255,255,0.8)" : "#6b7280" }}>
-                        {branch.address}
-                      </p>
-                    </div>
-                    <div
-                      className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
-                      style={{ background: isActive ? "rgba(255,255,255,0.2)" : "rgba(225,29,72,0.08)" }}
-                    >
-                      {isActive
-                        ? <Navigation size={16} color="#fff" />
-                        : <MapPin size={16} style={{ color: "#E11D48" }} />}
-                    </div>
-                  </div>
-
                   {isActive && (
-                    <div className="mt-3 pt-3 space-y-2" style={{ borderTop: "1px solid rgba(255,255,255,0.2)" }}>
-                      <div className="flex items-center gap-2">
-                        <Phone size={13} style={{ color: "rgba(255,255,255,0.6)" }} />
-                        <a
-                          href={`tel:${branch.phone.replace(/\D/g, "")}`}
-                          className="text-sm font-semibold text-white"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          {branch.phone}
-                        </a>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Clock size={13} style={{ color: "rgba(255,255,255,0.6)" }} />
-                        <span className="text-sm" style={{ color: "rgba(255,255,255,0.75)" }}>{branch.hours}</span>
-                      </div>
-                      <a
-                        href={branch.twoGis}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        className="inline-flex items-center gap-1.5 text-sm font-semibold"
-                        style={{ color: "#fff", textDecoration: "underline", textUnderlineOffset: "3px" }}
-                      >
-                        <ExternalLink size={13} />
-                        Открыть в 2ГИС
-                      </a>
-                    </div>
+                    <a
+                      href={branch.twoGis}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="inline-flex items-center gap-1 text-xs font-semibold mt-2 pt-2"
+                      style={{ color: "#DC2626", borderTop: "1px solid #F1F5F9", display: "flex" }}
+                    >
+                      <ExternalLink size={10} />
+                      Открыть в 2ГИС
+                    </a>
                   )}
                 </button>
               );
             })}
-
-            {activeId !== null && (
-              <button
-                onClick={() => { setActiveId(null); setMapLoading(true); }}
-                className="w-full py-2.5 rounded-xl text-sm font-medium transition-all"
-                style={{ color: "#9ca3af", border: "1.5px dashed #e5e7eb" }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "#E11D48"; (e.currentTarget as HTMLElement).style.color = "#E11D48"; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "#e5e7eb"; (e.currentTarget as HTMLElement).style.color = "#9ca3af"; }}
-              >
-                ← Показать все филиалы
-              </button>
-            )}
           </div>
 
-          {/* Map (right, sticky) */}
-          <div className="col-span-3 sticky top-24">
-            <MapBlock {...mapProps} />
-            <p className="text-xs text-center mt-2.5" style={{ color: "#9ca3af" }}>
-              {activeBranch
-                ? `📍 ${activeBranch.lat.toFixed(4)}°N, ${activeBranch.lng.toFixed(4)}°E`
-                : "📍 43.2567°N, 76.9286°E · Центр Алматы"}
-            </p>
+          {/* Dots */}
+          <div className="flex justify-center gap-1.5 mt-3">
+            {BRANCHES.map((b) => (
+              <button
+                key={b.id}
+                onClick={() => select(b.id)}
+                className="rounded-full transition-all"
+                style={{
+                  width: activeId === b.id ? 20 : 6,
+                  height: 6,
+                  background: activeId === b.id ? "#DC2626" : "#E2E8F0",
+                }}
+                aria-label={b.name}
+              />
+            ))}
           </div>
         </div>
 
-        {/* Phone CTA */}
+        {/* ── Phone CTA ── */}
         <div
-          className="mt-10 rounded-2xl p-6 text-center"
-          style={{ background: "rgba(225,29,72,0.05)", border: "1.5px solid rgba(225,29,72,0.15)" }}
+          className="mt-10 rounded-3xl p-6 text-center"
+          style={{ background: "#F9FAFB", border: "1px solid #F1F5F9" }}
         >
-          <p className="text-sm font-medium mb-2" style={{ color: "#6b7280" }}>
-            Единый колл-центр — работает для всех филиалов
+          <p className="text-sm mb-1.5" style={{ color: "#9CA3AF" }}>
+            Единый колл-центр — для всех филиалов
           </p>
           <a
             href="tel:87776667096"
             className="text-2xl font-black transition-colors"
-            style={{ color: "#E11D48" }}
-            onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#be123c")}
-            onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "#E11D48")}
+            style={{ color: "#111827" }}
+            onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#DC2626")}
+            onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "#111827")}
           >
             8-777-666-70-96
           </a>
         </div>
-      </div>
 
-      {/* Phone CTA mobile */}
-      <div className="lg:hidden max-w-7xl mx-auto px-4 sm:px-6 mt-6">
-        <div
-          className="rounded-2xl p-5 text-center"
-          style={{ background: "rgba(225,29,72,0.05)", border: "1.5px solid rgba(225,29,72,0.15)" }}
-        >
-          <p className="text-sm font-medium mb-2" style={{ color: "#6b7280" }}>
-            Единый колл-центр
-          </p>
-          <a
-            href="tel:87776667096"
-            className="text-xl font-black block mb-3"
-            style={{ color: "#E11D48" }}
-          >
-            8-777-666-70-96
-          </a>
-          <a
-            href="tel:87776667096"
-            className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl font-bold text-white text-base"
-            style={{ background: "#E11D48" }}
-          >
-            <Phone size={17} />
-            Позвонить сейчас
-          </a>
-        </div>
       </div>
     </section>
   );

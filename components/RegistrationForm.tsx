@@ -209,7 +209,7 @@ export default function RegistrationForm() {
               </button>
 
               <p className="text-xs text-center" style={{ color: "#D1D5DB" }}>
-                Нажимая кнопку, вы соглашаетесь с политикой обработки персональных данных
+                Нажимая кнопку, вы соглашаетесь с <a href="/privacy" className="underline" style={{ color: "#9CA3AF" }}>политикой обработки персональных данных</a>
               </p>
             </form>
           )}

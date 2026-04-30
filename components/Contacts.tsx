@@ -10,6 +10,15 @@ export default function Contacts() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!form.name.trim() || !form.phone.trim()) return;
+    const text = encodeURIComponent(
+      `Здравствуйте! Хочу записаться на обучение.\n\n` +
+      `Имя: ${form.name}\n` +
+      `Телефон: ${form.phone}\n` +
+      (form.message.trim() ? `Сообщение: ${form.message}\n` : "") +
+      `\n(заявка с сайта amurauto.kz)`
+    );
+    window.open(`https://wa.me/77776667096?text=${text}`, "_blank");
     setSent(true);
   };
 
@@ -210,7 +219,12 @@ export default function Contacts() {
                 className="text-xs text-center"
                 style={{ color: "rgba(255,255,255,0.2)" }}
               >
-                Нажимая кнопку, вы соглашаетесь с политикой обработки персональных данных
+                Нажимая кнопку, вы соглашаетесь с{" "}
+              <a href="/privacy" className="underline transition-colors" style={{ color: "rgba(204,255,0,0.5)" }}
+                onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#ccff00")}
+                onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "rgba(204,255,0,0.5)")}>
+                политикой обработки персональных данных
+              </a>
               </p>
             </form>
           )}

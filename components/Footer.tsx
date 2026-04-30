@@ -92,7 +92,14 @@ export default function Footer() {
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3"
           style={{ borderTop: "1px solid #F1F5F9" }}>
           <p className="text-xs" style={{ color: "#D1D5DB" }}>© {new Date().getFullYear()} АмурАвто. Все права защищены.</p>
-          <p className="mono">ЛИЦ. KZ-B-2024 · Алматы · 6 ФИЛИАЛОВ</p>
+          <div className="flex items-center gap-4">
+            <a href="/privacy" className="text-xs transition-colors" style={{ color: "#D1D5DB" }}
+              onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#111827")}
+              onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "#D1D5DB")}>
+              Политика конфиденциальности
+            </a>
+            <p className="mono">ЛИЦ. KZ-B-2024 · Алматы · 6 ФИЛИАЛОВ</p>
+          </div>
         </div>
       </div>
     </footer>

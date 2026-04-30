@@ -4,13 +4,16 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const REVIEWS = [
-  { name: "Бекзат Н.",  date: "Апрель 2026", rating: 5, text: "Записался онлайн — всё оформили быстро. Инструктор спокойный, объясняет чётко. Сдал с первого раза. Лучший выбор!" },
-  { name: "Айдана М.",  date: "Май 2025",    rating: 5, text: "Записалась через сайт, получила скидку 10%. Инструктор терпеливый, объяснял всё по шагам. Сдала с первого раза, очень довольна!" },
-  { name: "Нурлан С.",  date: "Апрель 2025", rating: 5, text: "Взял пакет Стандарт+. Пять занятий на автодроме и пять в городе — идеальный баланс. Преподаватели грамотные." },
-  { name: "Камила Р.",  date: "Март 2025",   rating: 5, text: "Привела подругу — обе получили по 10% скидки. Инструктор подобрал удобный график. Сдала с первого раза!" },
-  { name: "Арман Д.",   date: "Февраль 2025", rating: 5, text: "Выбрал пакет Комфорт — 15 занятий хватило с запасом. Учился на автомате, всё объяснили чётко." },
-  { name: "Зарина Т.",  date: "Январь 2025", rating: 5, text: "Долго боялась садиться за руль. Здесь всё объясняют спокойно, без давления. Теперь я с правами!" },
-  { name: "Малика А.",  date: "Ноябрь 2024", rating: 5, text: "Изучала механику. Оказалось всё доступно! Сдала экзамен без пересдачи. Огромное спасибо!" },
+  { name: "Азамат М.",     date: "2ГИС", rating: 5, text: "Получил права без всяких заморочек, теория и практика были сданы практически на отлично." },
+  { name: "Изабела Т.",    date: "2ГИС", rating: 5, text: "Преподаватели супер... Золотые люди с золотым сердцем." },
+  { name: "Kirill K.",     date: "2ГИС", rating: 5, text: "Сильные преподаватели, сильные инструктора — записывайтесь, не пожалеете." },
+  { name: "Asem K.",       date: "2ГИС", rating: 5, text: "Отличная автошкола! Преподаватели объясняют понятно. Получила права без проблем." },
+  { name: "Valeriia F.",   date: "2ГИС", rating: 5, text: "Качественная подготовка — сдала с первой попытки на 38/40. Рекомендую всем!" },
+  { name: "Дильназ С.",    date: "2ГИС", rating: 5, text: "Благодаря этой школе с первой попытки получила права 🥳" },
+  { name: "Elvira A.",     date: "2ГИС", rating: 5, text: "Сегодня я получила свои водительские права! Очень благодарна авто-школе." },
+  { name: "Балнур Т.",     date: "2ГИС", rating: 5, text: "Благодаря вам смогла самостоятельно сдать на права. Спасибо всей команде!" },
+  { name: "Дулат А.",      date: "2ГИС", rating: 5, text: "Лучшие! Мурат ага, спасибо огромное — получил права!" },
+  { name: "Марлен М.",     date: "2ГИС", rating: 5, text: "Сдал все экзамены с первой попытки благодаря Жанбырбаю, Рашиду и Зауре." },
 ];
 
 export default function Reviews() {
@@ -31,6 +34,25 @@ export default function Reviews() {
               style={{ fontSize: "clamp(2rem, 4vw, 3rem)", color: "#111827", letterSpacing: "-0.02em" }}>
               Что говорят курсанты
             </h2>
+            <div className="flex items-center gap-3 mt-4 flex-wrap">
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
+                style={{ background: "#FEF9C3", border: "1px solid #FDE68A" }}>
+                <span className="text-sm font-black" style={{ color: "#92400E" }}>★ 4.7</span>
+                <span className="text-xs font-medium" style={{ color: "#A16207" }}>из 5</span>
+              </div>
+              <span className="text-xs" style={{ color: "#9CA3AF" }}>122 отзыва</span>
+              <a
+                href="https://2gis.kz/almaty/firm/9429940001593162/tab/reviews"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs font-semibold underline transition-colors"
+                style={{ color: "#9CA3AF" }}
+                onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#111827")}
+                onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "#9CA3AF")}
+              >
+                Все отзывы на 2ГИС →
+              </a>
+            </div>
           </div>
           <div className="flex gap-2">
             <button onClick={prev}
@@ -65,10 +87,11 @@ export default function Reviews() {
               }}
             >
               {/* Stars */}
-              <div className="flex gap-1 mb-5">
+              <div className="flex gap-0.5 mb-5">
                 {Array.from({ length: r.rating }).map((_, j) => (
-                  <div key={j} className="w-3 h-3 rounded-sm"
-                    style={{ background: i === 1 ? "rgba(255,255,255,0.2)" : "#E11D48" }} />
+                  <svg key={j} width="16" height="16" viewBox="0 0 24 24" fill={i === 1 ? "rgba(255,255,255,0.6)" : "#FBBF24"}>
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                  </svg>
                 ))}
               </div>
 

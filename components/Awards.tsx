@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
+import { X, Clock, Car, ShieldCheck } from "lucide-react";
 
 const AWARDS = [
   { id: 1, caption: "Лучшая автошкола · 2013", issuer: "ДВД г. Алматы",     photo: "/awards/IMG_8059.jpg" },
@@ -13,8 +13,15 @@ const AWARDS = [
   { id: 5, caption: "Лучшая автошкола · 2024", issuer: "УАП г. Алматы",     photo: "/awards/IMG_8083.jpg" },
 ];
 
+const BENTO_STATS = [
+  { icon: Clock,       value: "12 лет",        label: "На рынке Алматы" },
+  { icon: Car,         value: "Автопарк",       label: "15+ учебных авто" },
+  { icon: ShieldCheck, value: "100%",           label: "Сертификация" },
+];
+
 type AwardItem = (typeof AWARDS)[0];
 
+/* ─── Lightbox ─── */
 function Lightbox({ award, onClose }: { award: AwardItem; onClose: () => void }) {
   return (
     <motion.div
@@ -23,7 +30,7 @@ function Lightbox({ award, onClose }: { award: AwardItem; onClose: () => void })
       exit={{ opacity: 0 }}
       transition={{ duration: 0.22 }}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8"
-      style={{ background: "rgba(10,10,15,0.85)", backdropFilter: "blur(16px)" }}
+      style={{ background: "rgba(10,10,15,0.88)", backdropFilter: "blur(16px)" }}
       onClick={onClose}
     >
       <motion.div
@@ -44,7 +51,7 @@ function Lightbox({ award, onClose }: { award: AwardItem; onClose: () => void })
         </button>
 
         <div
-          className="relative w-full rounded-2xl overflow-hidden"
+          className="relative w-full rounded-3xl overflow-hidden"
           style={{ aspectRatio: "3/4", boxShadow: "0 40px 100px rgba(0,0,0,0.5), 0 0 60px rgba(225,29,72,0.15)" }}
         >
           <Image src={award.photo} alt={award.caption} fill className="object-cover object-top" quality={95} />
@@ -59,25 +66,44 @@ function Lightbox({ award, onClose }: { award: AwardItem; onClose: () => void })
   );
 }
 
-function AwardCard({ award, onClick }: { award: AwardItem; onClick: () => void }) {
+/* ─── Award card ─── */
+function AwardCard({
+  award,
+  onClick,
+  dimmed,
+  onHover,
+  onLeave,
+}: {
+  award: AwardItem;
+  onClick: () => void;
+  dimmed: boolean;
+  onHover: () => void;
+  onLeave: () => void;
+}) {
   const [hovered, setHovered] = useState(false);
 
   return (
     <div
       className="flex flex-col gap-3 shrink-0"
-      style={{ width: "190px" }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      style={{
+        width: "190px",
+        opacity: dimmed ? 0.45 : 1,
+        transition: "opacity 0.28s ease",
+      }}
+      onMouseEnter={() => { setHovered(true); onHover(); }}
+      onMouseLeave={() => { setHovered(false); onLeave(); }}
     >
       <div
-        className="relative w-full rounded-2xl overflow-hidden cursor-pointer"
+        className="relative w-full overflow-hidden cursor-pointer"
         style={{
           aspectRatio: "3/4",
+          borderRadius: "1.5rem",
+          background: "#FFFFFF",
           transition: "transform 0.28s ease, box-shadow 0.28s ease",
           transform: hovered ? "scale(1.06)" : "scale(1)",
           boxShadow: hovered
-            ? "0 0 0 1.5px rgba(225,29,72,0.5), 0 12px 40px rgba(0,0,0,0.14), 0 0 32px rgba(225,29,72,0.28)"
-            : "0 0 0 1px #E5E7EB, 0 4px 16px rgba(0,0,0,0.06)",
+            ? "0 0 0 2px rgba(225,29,72,0.5), 0 16px 48px rgba(0,0,0,0.16), 0 0 32px rgba(225,29,72,0.2)"
+            : "0 2px 4px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.08)",
         }}
         onClick={onClick}
       >
@@ -108,26 +134,28 @@ function AwardCard({ award, onClick }: { award: AwardItem; onClick: () => void }
   );
 }
 
+/* ─── Main ─── */
 export default function Awards() {
   const [selected, setSelected] = useState<AwardItem | null>(null);
+  const [hoveredId, setHoveredId] = useState<number | null>(null);
   const doubled = [...AWARDS, ...AWARDS];
 
   return (
     <>
       <section id="awards" className="py-12 sm:py-24" style={{ background: "#F9FAFB" }}>
 
-        {/* Header */}
+        {/* ── Header ── */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 mb-10"
+          className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 mb-12"
         >
           <div className="label-tag mb-5">Достижения</div>
           <h2
-            className="font-extrabold leading-tight"
-            style={{ fontSize: "clamp(2rem, 4vw, 3rem)", color: "#111827", letterSpacing: "-0.02em" }}
+            className="font-black leading-tight"
+            style={{ fontSize: "clamp(2rem, 4vw, 3rem)", color: "#111827", letterSpacing: "-0.025em" }}
           >
             Подтверждаем качество делом
           </h2>
@@ -136,8 +164,97 @@ export default function Awards() {
           </p>
         </motion.div>
 
-        {/* Carousel */}
-        <div className="overflow-hidden">
+        {/* ── Bento stats blocks ── */}
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 mb-8">
+          <div className="grid grid-cols-3 gap-4">
+            {BENTO_STATS.map(({ icon: Icon, value, label }, i) => (
+              <motion.div
+                key={label}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.08 }}
+                className="flex flex-col items-center justify-center text-center p-6 sm:p-8"
+                style={{
+                  background: "#FFFFFF",
+                  borderRadius: "1.75rem",
+                  border: "1px solid #F1F5F9",
+                  boxShadow: "0 2px 16px rgba(0,0,0,0.04)",
+                  aspectRatio: "1 / 1",
+                }}
+              >
+                <div
+                  className="w-11 h-11 flex items-center justify-center rounded-xl mb-4"
+                  style={{ background: "rgba(225,29,72,0.07)", border: "1px solid rgba(225,29,72,0.14)" }}
+                >
+                  <Icon size={20} style={{ color: "#E11D48" }} />
+                </div>
+                <div
+                  className="font-black leading-none mb-1.5"
+                  style={{ fontSize: "clamp(1.1rem, 2.5vw, 1.6rem)", color: "#111827", letterSpacing: "-0.02em" }}
+                >
+                  {value}
+                </div>
+                <div className="text-[11px] font-medium leading-snug" style={{ color: "#9CA3AF" }}>{label}</div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── License block ── */}
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 mb-12">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 px-7 py-6"
+            style={{
+              background: "#FFFFFF",
+              borderRadius: "2rem",
+              border: "1px solid #F1F5F9",
+              boxShadow: "0 4px 24px rgba(0,0,0,0.05)",
+            }}
+          >
+            <div>
+              <div className="flex items-center gap-2.5 mb-2">
+                {/* Pulsing dot */}
+                <span className="relative flex w-2.5 h-2.5 shrink-0">
+                  <span
+                    className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-60"
+                    style={{ background: "#E11D48" }}
+                  />
+                  <span
+                    className="relative inline-flex rounded-full w-2.5 h-2.5"
+                    style={{ background: "#E11D48" }}
+                  />
+                </span>
+                <span className="text-xs font-bold uppercase tracking-widest" style={{ color: "#E11D48" }}>
+                  Действующая
+                </span>
+              </div>
+              <p className="font-black text-lg" style={{ color: "#111827", letterSpacing: "-0.02em" }}>
+                Лицензия МВД РК
+              </p>
+              <p className="text-sm mt-1" style={{ color: "#6B7280" }}>
+                Автошкола категории «B» · Аккредитована МВД Республики Казахстан
+              </p>
+            </div>
+            <div
+              className="shrink-0 px-5 py-3 rounded-2xl text-center"
+              style={{ background: "#F9FAFB", border: "1px solid #F1F5F9" }}
+            >
+              <p className="mono text-[10px] mb-1" style={{ color: "#9CA3AF" }}>Категория</p>
+              <p className="font-black text-2xl" style={{ color: "#111827", letterSpacing: "-0.02em" }}>B</p>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* ── Awards carousel ── */}
+        <div
+          className="overflow-hidden"
+          onMouseLeave={() => setHoveredId(null)}
+        >
           <div
             className="awards-track flex gap-5 w-max"
             style={{ paddingLeft: "24px", paddingRight: "24px" }}
@@ -145,7 +262,14 @@ export default function Awards() {
             onMouseLeave={(e) => e.currentTarget.classList.remove("paused")}
           >
             {doubled.map((award, i) => (
-              <AwardCard key={`${award.id}-${i}`} award={award} onClick={() => setSelected(award)} />
+              <AwardCard
+                key={`${award.id}-${i}`}
+                award={award}
+                onClick={() => setSelected(award)}
+                dimmed={hoveredId !== null && hoveredId !== award.id}
+                onHover={() => setHoveredId(award.id)}
+                onLeave={() => setHoveredId(null)}
+              />
             ))}
           </div>
         </div>
