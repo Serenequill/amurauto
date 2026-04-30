@@ -19,9 +19,9 @@ export default function Home() {
       <HeroSection />
       <Marquee />
       <RoadDivider />
-      <BranchesSection />
-      <RoadDivider />
       <PddTrainer />
+      <RoadDivider />
+      <BranchesSection />
       <RoadDivider />
       <Pricing />
       <RoadDivider />
