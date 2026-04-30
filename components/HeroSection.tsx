@@ -1,24 +1,26 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, Phone, Award, Car, CheckCircle } from "lucide-react";
+import { ArrowRight, Phone, Award, Car, CheckCircle, ShieldCheck } from "lucide-react";
 import Magnetic from "@/components/Magnetic";
 
-/* ─────────────────────────────────────────
-   Palette — глубокий бордовый вместо яркого
-────────────────────────────────────────── */
-const RED      = "#9E1239";   // главный — бордово-малиновый
-const RED_DARK = "#7D0E2D";   // hover / тёмный вариант
-const RED_GLOW = "rgba(158,18,57,0.28)";
+/* ─── Palette ─── */
+const RED      = "#9E1239";
+const RED_DARK = "#7D0E2D";
 const RED_SOFT = "rgba(158,18,57,0.07)";
+const RED_GLOW = "rgba(158,18,57,0.30)";
 
-/* Layered shadow — дорогой эффект */
+/* ─── Two-layer premium shadow ─── */
 const CARD_SHADOW =
-  "0 1px 2px rgba(0,0,0,0.04), " +
-  "0 4px 8px rgba(0,0,0,0.04), " +
-  "0 12px 32px rgba(0,0,0,0.07), " +
-  "0 32px 56px rgba(0,0,0,0.04), " +
-  "inset 0 1px 0 rgba(255,255,255,1)";
+  "0 2px 4px rgba(0,0,0,0.07), " +          /* плотная — прямо под объектом */
+  "0 8px 16px rgba(0,0,0,0.05), " +          /* средняя */
+  "0 28px 64px rgba(0,0,0,0.08), " +         /* большая мягкая */
+  "inset 0 1px 0 rgba(255,255,255,0.95)";    /* бликовая полоска сверху */
+
+const CARD_SHADOW_SM =
+  "0 1px 3px rgba(0,0,0,0.06), " +
+  "0 6px 20px rgba(0,0,0,0.07), " +
+  "inset 0 1px 0 rgba(255,255,255,0.95)";
 
 const STATS = [
   { value: "1000+", label: "учеников" },
@@ -31,23 +33,23 @@ export default function HeroSection() {
     <section
       id="hero"
       className="relative lg:min-h-screen flex items-center overflow-hidden pt-16"
-      style={{ background: "linear-gradient(160deg, #ffffff 0%, #faf9f7 60%, #fdf5f7 100%)" }}
+      style={{ background: "linear-gradient(160deg, #ffffff 0%, #faf9f7 55%, #fdf5f7 100%)" }}
     >
       {/* Dot grid */}
       <div className="absolute inset-0 pointer-events-none"
         style={{
           backgroundImage: "radial-gradient(circle, #dde3ec 1px, transparent 1px)",
           backgroundSize: "30px 30px",
-          opacity: 0.4,
+          opacity: 0.38,
         }}
       />
 
-      {/* Depth blobs — обновлённый цвет */}
+      {/* Depth blobs */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] pointer-events-none"
-        style={{ background: `radial-gradient(circle at 80% 20%, ${RED_SOFT} 0%, transparent 60%)`, filter: "blur(60px)" }} />
+        style={{ background: "radial-gradient(circle at 80% 20%, rgba(158,18,57,0.055) 0%, transparent 60%)", filter: "blur(60px)" }} />
       <div className="absolute pointer-events-none"
         style={{ top: "15%", left: "-5%", width: "520px", height: "380px",
-          background: `radial-gradient(ellipse at center, rgba(158,18,57,0.04) 0%, transparent 70%)`,
+          background: "radial-gradient(ellipse at center, rgba(158,18,57,0.04) 0%, transparent 70%)",
           filter: "blur(70px)" }} />
 
       <div className="relative w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-16">
@@ -56,45 +58,45 @@ export default function HeroSection() {
           {/* ══ LEFT ══ */}
           <div className="col-span-12 lg:col-span-6 flex flex-col justify-center">
 
-            {/* ── Бренд-бейдж — нейтральный, не красный ── */}
+            {/* Бренд-бейдж — нейтральный */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55 }}
               className="inline-flex items-center gap-2 mb-7 self-start px-4 py-2 rounded-full"
-              style={{
-                background: "rgba(15,23,42,0.05)",
-                border: "1px solid rgba(15,23,42,0.1)",
-              }}
+              style={{ background: "rgba(15,23,42,0.05)", border: "1px solid rgba(15,23,42,0.09)" }}
             >
-              <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#0F172A" }} />
+              <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#334155" }} />
               <span className="text-xs font-semibold uppercase tracking-widest"
                 style={{ color: "#334155", letterSpacing: "0.11em" }}>
                 №1 по сдаче с первого раза · Алматы
               </span>
             </motion.div>
 
-            {/* ── Заголовок — увеличенный межстрочник ── */}
+            {/* ── Заголовок ── */}
             <motion.h1
               initial={{ opacity: 0, y: 22 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.65, delay: 0.1 }}
               className="font-black mb-5"
-              style={{
-                fontSize: "clamp(2.4rem, 5vw, 4rem)",
-                color: "#0F172A",
-                letterSpacing: "-0.03em",
-                lineHeight: 1.18,   /* воздух между строками */
-              }}
+              style={{ fontSize: "clamp(2.4rem, 5vw, 4rem)", color: "#0F172A",
+                letterSpacing: "-0.03em", lineHeight: 1.18 }}
             >
               Сядь за руль{" "}
-              {/* "уверенно" — единственный яркий акцент */}
-              <span style={{ color: RED, letterSpacing: "0.01em" }}>уверенно</span>{" "}
-              —{" "}<br className="hidden sm:block" />
+              {/* Gradient text на "уверенно" + убрали тире */}
+              <span style={{
+                background: `linear-gradient(135deg, #C41E3A 0%, ${RED} 55%, ${RED_DARK} 100%)`,
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}>
+                уверенно
+              </span>
+              <br />
               с первого раза
             </motion.h1>
 
-            {/* ── Подзаголовок — светлее + больше воздуха ── */}
+            {/* ── Подзаголовок — сильный текст ── */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
@@ -102,16 +104,15 @@ export default function HeroSection() {
               className="mb-7 max-w-[440px]"
             >
               <p className="text-lg" style={{ color: "#94A3B8", lineHeight: 1.85, fontWeight: 400 }}>
-                Теория, практика и подготовка к экзамену — доведём до получения прав.
+                Система обучения, которая доводит до получения прав.
               </p>
-              {/* Микро-слоган бренда */}
               <p className="text-xs mt-3 font-medium"
                 style={{ color: "#CBD5E1", letterSpacing: "0.06em" }}>
-                Система, которая доводит до прав
+                Теория · Практика · Подготовка к экзамену
               </p>
             </motion.div>
 
-            {/* ── Urgency — пульсирующий индикатор (оставляем) ── */}
+            {/* Urgency */}
             <motion.div
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
@@ -119,7 +120,7 @@ export default function HeroSection() {
               className="inline-flex items-center gap-2.5 mb-8 self-start px-4 py-2.5 rounded-xl"
               style={{
                 background: "rgba(255,251,235,0.8)",
-                border: "1px solid rgba(245,158,11,0.2)",
+                border: "1px solid rgba(245,158,11,0.18)",
                 backdropFilter: "blur(12px)",
                 WebkitBackdropFilter: "blur(12px)",
               }}
@@ -134,7 +135,7 @@ export default function HeroSection() {
               </span>
             </motion.div>
 
-            {/* ── CTA — глубокий бордовый градиент ── */}
+            {/* ── CTA — с внутренним бликом ── */}
             <motion.div
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
@@ -146,19 +147,19 @@ export default function HeroSection() {
                   href="#register"
                   className="inline-flex items-center gap-2.5 px-7 py-4 rounded-2xl text-sm font-bold text-white"
                   style={{
-                    background: `linear-gradient(135deg, #B91C3D 0%, ${RED} 55%, ${RED_DARK} 100%)`,
-                    boxShadow: `0 4px 6px rgba(0,0,0,0.07), 0 10px 24px ${RED_GLOW}`,
-                    transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                    background: `linear-gradient(160deg, #C41E3A 0%, ${RED} 50%, ${RED_DARK} 100%)`,
+                    boxShadow: `0 2px 4px rgba(0,0,0,0.12), 0 8px 24px ${RED_GLOW}, inset 0 1px 0 rgba(255,255,255,0.15)`,
+                    transition: "transform 0.22s ease, box-shadow 0.22s ease",
                   }}
                   onMouseEnter={(e) => {
                     const el = e.currentTarget as HTMLElement;
-                    el.style.transform = "translateY(-2px) scale(1.02)";
-                    el.style.boxShadow = `0 8px 12px rgba(0,0,0,0.08), 0 20px 40px ${RED_GLOW}`;
+                    el.style.transform = "translateY(-2px)";
+                    el.style.boxShadow = `0 4px 8px rgba(0,0,0,0.14), 0 16px 40px ${RED_GLOW}, inset 0 1px 0 rgba(255,255,255,0.18)`;
                   }}
                   onMouseLeave={(e) => {
                     const el = e.currentTarget as HTMLElement;
                     el.style.transform = "";
-                    el.style.boxShadow = `0 4px 6px rgba(0,0,0,0.07), 0 10px 24px ${RED_GLOW}`;
+                    el.style.boxShadow = `0 2px 4px rgba(0,0,0,0.12), 0 8px 24px ${RED_GLOW}, inset 0 1px 0 rgba(255,255,255,0.15)`;
                   }}
                 >
                   Записаться на обучение
@@ -166,7 +167,6 @@ export default function HeroSection() {
                 </a>
               </Magnetic>
 
-              {/* Вторичная кнопка — воздушнее, тоньше бордер */}
               <a
                 href="tel:87776667096"
                 className="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl text-sm font-medium"
@@ -175,7 +175,7 @@ export default function HeroSection() {
                   color: "#334155",
                   border: "1px solid #E2E8F0",
                   boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04)",
-                  transition: "transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s",
+                  transition: "transform 0.22s ease, box-shadow 0.22s ease, border-color 0.2s",
                 }}
                 onMouseEnter={(e) => {
                   const el = e.currentTarget as HTMLElement;
@@ -195,7 +195,7 @@ export default function HeroSection() {
               </a>
             </motion.div>
 
-            {/* ── Статистика — все цифры тёмные, подписи светлее ── */}
+            {/* Stats */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -223,25 +223,25 @@ export default function HeroSection() {
             </motion.div>
           </div>
 
-          {/* ══ RIGHT — Premium cards ══ */}
+          {/* ══ RIGHT — Premium cards (шире на ~10%) ══ */}
           <div className="hidden lg:flex col-span-12 lg:col-span-6 items-center justify-center relative"
             style={{ minHeight: "580px" }}>
 
-            <div className="flex flex-col gap-4 w-full max-w-[380px]">
+            <div className="flex flex-col gap-4 w-full max-w-[415px]">
 
-              {/* ── Dashboard card — off-white, layered shadow, glass ── */}
+              {/* ── Dashboard card ── */}
               <motion.div
                 initial={{ opacity: 0, y: 28, scale: 0.96 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ duration: 0.75, delay: 0.3 }}
                 style={{
-                  background: "rgba(250,249,247,0.96)",   /* тёплый off-white */
+                  background: "rgba(250,249,247,0.96)",
                   backdropFilter: "blur(24px)",
                   WebkitBackdropFilter: "blur(24px)",
-                  border: "1px solid rgba(0,0,0,0.05)",   /* почти невидимый */
+                  border: "1px solid rgba(0,0,0,0.045)",
                   borderRadius: "24px",
                   boxShadow: CARD_SHADOW,
-                  padding: "24px",
+                  padding: "26px",
                 }}
               >
                 <div className="flex items-center justify-between mb-5">
@@ -251,10 +251,14 @@ export default function HeroSection() {
                     <p className="font-black text-base"
                       style={{ color: "#0F172A", letterSpacing: "-0.02em" }}>Пакет «Стандарт+»</p>
                   </div>
-                  {/* "Активен" — пульсирующая точка */}
+                  {/* "Активен" с glow-пульсацией */}
                   <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full"
-                    style={{ background: "rgba(22,163,74,0.07)", color: "#16A34A",
-                      border: "1px solid rgba(22,163,74,0.12)" }}>
+                    style={{
+                      background: "rgba(22,163,74,0.07)",
+                      color: "#16A34A",
+                      border: "1px solid rgba(22,163,74,0.12)",
+                      boxShadow: "0 0 0 3px rgba(22,163,74,0.06), 0 0 14px rgba(22,163,74,0.1)",
+                    }}>
                     <span className="relative flex w-1.5 h-1.5">
                       <span className="animate-ping absolute inline-flex w-full h-full rounded-full opacity-50"
                         style={{ background: "#16A34A" }} />
@@ -265,7 +269,7 @@ export default function HeroSection() {
                   </span>
                 </div>
 
-                {/* Progress bar — дышащая анимация */}
+                {/* ── Прогресс-бар с шиммером ── */}
                 <div className="mb-5">
                   <div className="flex justify-between mb-2">
                     <span className="text-xs font-medium" style={{ color: "#94A3B8" }}>Общий прогресс</span>
@@ -274,23 +278,29 @@ export default function HeroSection() {
                   <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ background: "#F1F5F9" }}>
                     <motion.div
                       initial={{ width: 0 }}
-                      animate={{ width: ["0%", "62%", "63%", "62%"] }}
-                      transition={{
-                        duration: 1.8, delay: 0.9,
-                        times: [0, 0.65, 0.82, 1],
-                        repeat: Infinity,
-                        repeatDelay: 5,
-                        repeatType: "loop",
-                      }}
+                      animate={{ width: "62%" }}
+                      transition={{ duration: 1.2, delay: 0.9, ease: [0.22, 1, 0.36, 1] }}
+                      className="relative overflow-hidden"
                       style={{
                         height: "100%", borderRadius: 999,
-                        background: `linear-gradient(90deg, ${RED}, #E05A78)`,
+                        background: `linear-gradient(90deg, ${RED_DARK} 0%, ${RED} 50%, #E05A78 100%)`,
                       }}
-                    />
+                    >
+                      {/* Shimmer sweep */}
+                      <motion.div
+                        animate={{ x: ["-120%", "220%"] }}
+                        transition={{ duration: 1.6, delay: 2.2, repeat: Infinity, repeatDelay: 3.5, ease: "easeInOut" }}
+                        style={{
+                          position: "absolute", inset: 0, width: "45%",
+                          background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)",
+                          borderRadius: 999,
+                        }}
+                      />
+                    </motion.div>
                   </div>
                 </div>
 
-                {/* Mini stats — убраны лишние бордеры */}
+                {/* Mini stats */}
                 <div className="grid grid-cols-3 gap-2.5 mb-4">
                   {[
                     { label: "Теория",      value: "28 ч",  done: true  },
@@ -313,9 +323,9 @@ export default function HeroSection() {
                   ))}
                 </div>
 
-                {/* Следующее занятие — красная точка = микро-акцент ✓ */}
+                {/* Следующее занятие */}
                 <div className="flex items-center gap-3 px-4 py-3 rounded-2xl"
-                  style={{ background: RED_SOFT, border: `1px solid rgba(158,18,57,0.08)` }}>
+                  style={{ background: RED_SOFT, border: "1px solid rgba(158,18,57,0.08)" }}>
                   <div className="w-1.5 h-1.5 rounded-full animate-pulse shrink-0"
                     style={{ background: RED }} />
                   <p className="text-xs font-medium" style={{ color: "#334155" }}>
@@ -334,19 +344,19 @@ export default function HeroSection() {
                   background: "rgba(250,249,247,0.96)",
                   backdropFilter: "blur(24px)",
                   WebkitBackdropFilter: "blur(24px)",
-                  border: "1px solid rgba(0,0,0,0.05)",
+                  border: "1px solid rgba(0,0,0,0.045)",
                   borderRadius: "20px",
-                  boxShadow: "0 1px 2px rgba(0,0,0,0.04), 0 6px 20px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,1)",
-                  padding: "20px 24px",
+                  boxShadow: CARD_SHADOW_SM,
+                  padding: "20px 26px",
                 }}
               >
                 <p className="text-[10px] font-bold uppercase tracking-widest mb-4"
                   style={{ color: "#CBD5E1" }}>Путь обучения</p>
                 <div className="flex items-center">
                   {[
-                    { label: "Теория",   sub: "Пройдена",  done: true,  active: false },
-                    { label: "Практика", sub: "8 из 10",   done: false, active: true  },
-                    { label: "Экзамен",  sub: "Впереди",   done: false, active: false },
+                    { label: "Теория",   sub: "Пройдена", done: true,  active: false },
+                    { label: "Практика", sub: "8 из 10",  done: false, active: true  },
+                    { label: "Экзамен",  sub: "Впереди",  done: false, active: false },
                   ].map((step, i) => (
                     <div key={step.label} className="flex items-center flex-1">
                       <div className="flex flex-col items-center flex-1">
@@ -355,7 +365,7 @@ export default function HeroSection() {
                             background: step.done ? "#16A34A" : step.active ? RED : "#F1F5F9",
                             border: step.active ? `2px solid ${RED}` : "none",
                             boxShadow: step.active
-                              ? `0 0 0 4px rgba(158,18,57,0.1)`
+                              ? `0 0 0 4px rgba(158,18,57,0.1), 0 4px 12px rgba(158,18,57,0.2)`
                               : step.done ? "0 4px 12px rgba(22,163,74,0.2)" : "none",
                           }}>
                           {step.done
@@ -373,7 +383,7 @@ export default function HeroSection() {
                       </div>
                       {i < 2 && (
                         <div className="h-px w-6 shrink-0 rounded-full mx-1"
-                          style={{ background: i === 0 ? "#16A34A" : "#E5E7EB" }} />
+                          style={{ background: i === 0 ? "rgba(22,163,74,0.4)" : "#E5E7EB" }} />
                       )}
                     </div>
                   ))}
@@ -381,7 +391,7 @@ export default function HeroSection() {
               </motion.div>
             </div>
 
-            {/* Floating badges */}
+            {/* Floating badge — 100% ПДД */}
             <motion.div
               initial={{ opacity: 0, x: -16 }}
               animate={{ opacity: 1, x: 0 }}
@@ -393,11 +403,11 @@ export default function HeroSection() {
                 className="absolute flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl"
                 style={{
                   top: "8%", left: "-10%",
-                  background: "rgba(255,255,255,0.92)",
+                  background: "rgba(255,255,255,0.94)",
                   backdropFilter: "blur(16px)",
                   WebkitBackdropFilter: "blur(16px)",
                   border: "1px solid rgba(0,0,0,0.05)",
-                  boxShadow: "0 4px 6px rgba(0,0,0,0.04), 0 12px 28px rgba(0,0,0,0.08)",
+                  boxShadow: "0 2px 4px rgba(0,0,0,0.06), 0 12px 28px rgba(0,0,0,0.09)",
                   whiteSpace: "nowrap",
                 }}
               >
@@ -413,6 +423,7 @@ export default function HeroSection() {
               </motion.div>
             </motion.div>
 
+            {/* Floating badge — Трансмиссия */}
             <motion.div
               initial={{ opacity: 0, x: 16 }}
               animate={{ opacity: 1, x: 0 }}
@@ -423,12 +434,12 @@ export default function HeroSection() {
                 transition={{ duration: 4.5, ease: "easeInOut", repeat: Infinity }}
                 className="absolute flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl"
                 style={{
-                  bottom: "12%", right: "-8%",
-                  background: "rgba(255,255,255,0.92)",
+                  bottom: "20%", right: "-8%",
+                  background: "rgba(255,255,255,0.94)",
                   backdropFilter: "blur(16px)",
                   WebkitBackdropFilter: "blur(16px)",
                   border: "1px solid rgba(0,0,0,0.05)",
-                  boxShadow: "0 4px 6px rgba(0,0,0,0.04), 0 12px 28px rgba(0,0,0,0.08)",
+                  boxShadow: "0 2px 4px rgba(0,0,0,0.06), 0 12px 28px rgba(0,0,0,0.09)",
                   whiteSpace: "nowrap",
                 }}
               >
@@ -440,6 +451,38 @@ export default function HeroSection() {
                   <p className="text-[9px] font-medium uppercase tracking-wider"
                     style={{ color: "#CBD5E1" }}>Трансмиссия</p>
                   <p className="text-xs font-bold" style={{ color: "#0F172A" }}>Автомат / механика</p>
+                </div>
+              </motion.div>
+            </motion.div>
+
+            {/* Floating badge — Лицензия (новый, держит вес правой части) */}
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 1.15 }}
+            >
+              <motion.div
+                animate={{ y: [0, -5, 0] }}
+                transition={{ duration: 5.5, ease: "easeInOut", repeat: Infinity }}
+                className="absolute flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl"
+                style={{
+                  bottom: "3%", left: "5%",
+                  background: "rgba(255,255,255,0.94)",
+                  backdropFilter: "blur(16px)",
+                  WebkitBackdropFilter: "blur(16px)",
+                  border: "1px solid rgba(0,0,0,0.05)",
+                  boxShadow: "0 2px 4px rgba(0,0,0,0.06), 0 12px 28px rgba(0,0,0,0.09)",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                <div className="w-7 h-7 rounded-xl flex items-center justify-center"
+                  style={{ background: "rgba(15,23,42,0.06)" }}>
+                  <ShieldCheck size={13} style={{ color: "#334155" }} />
+                </div>
+                <div>
+                  <p className="text-[9px] font-medium uppercase tracking-wider"
+                    style={{ color: "#CBD5E1" }}>Лицензия МВД РК</p>
+                  <p className="text-xs font-bold" style={{ color: "#0F172A" }}>ДП № 00862</p>
                 </div>
               </motion.div>
             </motion.div>
