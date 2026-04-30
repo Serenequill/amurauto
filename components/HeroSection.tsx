@@ -231,9 +231,9 @@ export default function HeroSection() {
 
               {/* ── Dashboard card ── */}
               <motion.div
-                initial={{ opacity: 0, y: 28, scale: 0.96 }}
+                initial={{ opacity: 0, y: 56, scale: 0.93 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ duration: 0.75, delay: 0.3 }}
+                transition={{ duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
                 style={{
                   background: "rgba(250,249,247,0.96)",
                   backdropFilter: "blur(24px)",
@@ -337,9 +337,9 @@ export default function HeroSection() {
 
               {/* ── Timeline card ── */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.65, delay: 0.55 }}
+                initial={{ opacity: 0, y: 44, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.8, delay: 0.58, ease: [0.22, 1, 0.36, 1] }}
                 style={{
                   background: "rgba(250,249,247,0.96)",
                   backdropFilter: "blur(24px)",
@@ -393,9 +393,9 @@ export default function HeroSection() {
 
             {/* Floating badge — 100% ПДД */}
             <motion.div
-              initial={{ opacity: 0, x: -16 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.85 }}
+              initial={{ opacity: 0, x: -20, y: 10 }}
+              animate={{ opacity: 1, x: 0, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.9, ease: [0.22, 1, 0.36, 1] }}
             >
               <motion.div
                 animate={{ y: [0, -8, 0] }}
@@ -425,9 +425,9 @@ export default function HeroSection() {
 
             {/* Floating badge — Трансмиссия */}
             <motion.div
-              initial={{ opacity: 0, x: 16 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 1.0 }}
+              initial={{ opacity: 0, x: 20, y: 10 }}
+              animate={{ opacity: 1, x: 0, y: 0 }}
+              transition={{ duration: 0.6, delay: 1.05, ease: [0.22, 1, 0.36, 1] }}
             >
               <motion.div
                 animate={{ y: [0, 8, 0] }}
@@ -457,9 +457,9 @@ export default function HeroSection() {
 
             {/* Floating badge — Лицензия (новый, держит вес правой части) */}
             <motion.div
-              initial={{ opacity: 0, y: 12 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 1.15 }}
+              transition={{ duration: 0.6, delay: 1.2, ease: [0.22, 1, 0.36, 1] }}
             >
               <motion.div
                 animate={{ y: [0, -5, 0] }}

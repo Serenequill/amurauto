@@ -71,6 +71,12 @@ body::after {
 }
 .animate-pulse-red { animation: pulse-red 2s ease-in-out infinite; }
 
+/* ── Ping (пульсирующий индикатор) ── */
+@keyframes ping {
+  75%, 100% { transform: scale(2); opacity: 0; }
+}
+.animate-ping { animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite; }
+
 /* ── Bounce soft (WhatsApp) ── */
 @keyframes bounce-soft {
   0%, 100% { transform: translateY(0); }
