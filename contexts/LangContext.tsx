@@ -26,6 +26,11 @@ export function LangProvider({ children }: { children: ReactNode }) {
     } catch {}
   }, []);
 
+  /* Sync <html lang="..."> with current language */
+  useEffect(() => {
+    document.documentElement.lang = lang === "kz" ? "kk" : "ru";
+  }, [lang]);
+
   const setLang = (l: Lang) => {
     setLangState(l);
     try { localStorage.setItem("lang", l); } catch {}

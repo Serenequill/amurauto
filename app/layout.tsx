@@ -18,6 +18,21 @@ export const metadata: Metadata = {
   title: "АмурАвто — Автошкола в Алматы",
   description:
     "Автошкола АмурАвто в Алматы. 6 филиалов, категория B, профессиональные инструкторы, 100% сдача экзамена ПДД.",
+  keywords: ["автошкола", "Алматы", "права", "категория B", "ПДД", "АмурАвто", "вождение"],
+  openGraph: {
+    title: "АмурАвто — Автошкола в Алматы",
+    description: "6 филиалов · Категория B · 100% сдача ПДД · Профессиональные инструкторы",
+    url: "https://amurauto.kz",
+    siteName: "АмурАвто",
+    locale: "ru_RU",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "АмурАвто — Автошкола в Алматы",
+    description: "6 филиалов · Категория B · 100% сдача ПДД",
+  },
+  metadataBase: new URL("https://amurauto.kz"),
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
