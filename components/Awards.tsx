@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Clock, Car, ShieldCheck } from "lucide-react";
+import { useLang } from "@/contexts/LangContext";
 
 const AWARDS = [
   { id: 1, caption: "Лучшая автошкола · 2013", issuer: "ДВД г. Алматы",     photo: "/awards/IMG_8059.jpg" },
@@ -13,11 +14,7 @@ const AWARDS = [
   { id: 5, caption: "Лучшая автошкола · 2024", issuer: "УАП г. Алматы",     photo: "/awards/IMG_8083.jpg" },
 ];
 
-const BENTO_STATS = [
-  { icon: Clock,       value: "12 лет",        label: "На рынке Алматы" },
-  { icon: Car,         value: "Автопарк",       label: "15+ учебных авто" },
-  { icon: ShieldCheck, value: "100%",           label: "Сертификация" },
-];
+const BENTO_ICONS = [Clock, Car, ShieldCheck];
 
 type AwardItem = (typeof AWARDS)[0];
 
@@ -73,12 +70,14 @@ function AwardCard({
   dimmed,
   onHover,
   onLeave,
+  openLabel,
 }: {
   award: AwardItem;
   onClick: () => void;
   dimmed: boolean;
   onHover: () => void;
   onLeave: () => void;
+  openLabel: string;
 }) {
   const [hovered, setHovered] = useState(false);
 
@@ -121,7 +120,7 @@ function AwardCard({
             className="text-xs font-bold px-3 py-1.5 rounded-full"
             style={{ background: "rgba(255,255,255,0.15)", color: "#FFFFFF", backdropFilter: "blur(6px)" }}
           >
-            Открыть
+            {openLabel}
           </span>
         </div>
       </div>
@@ -136,6 +135,9 @@ function AwardCard({
 
 /* ─── Main ─── */
 export default function Awards() {
+  const { t } = useLang();
+  const aw = t.awards;
+
   const [selected, setSelected] = useState<AwardItem | null>(null);
   const [hoveredId, setHoveredId] = useState<number | null>(null);
   const doubled = [...AWARDS, ...AWARDS];
@@ -152,22 +154,24 @@ export default function Awards() {
           transition={{ duration: 0.5 }}
           className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 mb-12"
         >
-          <div className="label-tag mb-5">Достижения</div>
+          <div className="label-tag mb-5">{aw.tag}</div>
           <h2
             className="font-black leading-tight"
             style={{ fontSize: "clamp(2rem, 4vw, 3rem)", color: "#111827", letterSpacing: "-0.025em" }}
           >
-            Подтверждаем качество делом
+            {aw.title}
           </h2>
           <p className="text-sm mt-3 max-w-lg" style={{ color: "#9CA3AF" }}>
-            Лицензии, благодарственные письма и награды за 12 лет работы
+            {aw.subtitle}
           </p>
         </motion.div>
 
         {/* ── Bento stats blocks ── */}
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 mb-8">
           <div className="grid grid-cols-3 gap-4">
-            {BENTO_STATS.map(({ icon: Icon, value, label }, i) => (
+            {aw.bentoStats.map(({ value, label }, i) => {
+              const Icon = BENTO_ICONS[i];
+              return (
               <motion.div
                 key={label}
                 initial={{ opacity: 0, y: 12 }}
@@ -197,7 +201,8 @@ export default function Awards() {
                 </div>
                 <div className="text-[11px] font-medium leading-snug" style={{ color: "#9CA3AF" }}>{label}</div>
               </motion.div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
@@ -230,21 +235,21 @@ export default function Awards() {
                   />
                 </span>
                 <span className="text-xs font-bold uppercase tracking-widest" style={{ color: "#E11D48" }}>
-                  Действующая
+                  {aw.licenseActive}
                 </span>
               </div>
               <p className="font-black text-lg" style={{ color: "#111827", letterSpacing: "-0.02em" }}>
-                Лицензия МВД РК
+                {aw.licenseTitle}
               </p>
               <p className="text-sm mt-1" style={{ color: "#6B7280" }}>
-                Автошкола категории «B» · Аккредитована МВД Республики Казахстан
+                {aw.licenseDesc}
               </p>
             </div>
             <div
               className="shrink-0 px-5 py-3 rounded-2xl text-center"
               style={{ background: "#F9FAFB", border: "1px solid #F1F5F9" }}
             >
-              <p className="mono text-[10px] mb-1" style={{ color: "#9CA3AF" }}>Категория</p>
+              <p className="mono text-[10px] mb-1" style={{ color: "#9CA3AF" }}>{aw.categoryLabel}</p>
               <p className="font-black text-2xl" style={{ color: "#111827", letterSpacing: "-0.02em" }}>B</p>
             </div>
           </motion.div>
@@ -269,6 +274,7 @@ export default function Awards() {
                 dimmed={hoveredId !== null && hoveredId !== award.id}
                 onHover={() => setHoveredId(award.id)}
                 onLeave={() => setHoveredId(null)}
+                openLabel={aw.open}
               />
             ))}
           </div>

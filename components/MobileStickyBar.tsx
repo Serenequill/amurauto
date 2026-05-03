@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { Phone } from "lucide-react";
+import { useLang } from "@/contexts/LangContext";
 
 export default function MobileStickyBar() {
+  const { t } = useLang();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -39,7 +41,7 @@ export default function MobileStickyBar() {
             boxShadow: "0 6px 18px rgba(225,29,72,0.35)",
           }}
         >
-          Записаться на обучение
+          {t.sticky.enroll}
         </a>
         <a
           href="tel:87776667096"

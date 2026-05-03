@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Check, Users, MousePointerClick, ArrowRight } from "lucide-react";
+import { useLang } from "@/contexts/LangContext";
 
 /* ─── Shadow tokens ─── */
 const CARD_SHADOW =
@@ -16,70 +17,10 @@ const CARD_SHADOW_DARK =
   "0 40px 80px rgba(0,0,0,0.22), " +
   "inset 0 1px 0 rgba(255,255,255,0.07)";
 
-/* ─── Promo banners ─── */
-const PROMOS = [
-  {
-    Icon: Users,
-    title: "Приведи друга",
-    desc: "Оба получают скидку на полный курс обучения",
-    badge: "−10%",
-  },
-  {
-    Icon: MousePointerClick,
-    title: "Запись с сайта",
-    desc: "Скидка при подаче заявки онлайн прямо сейчас",
-    badge: "−10%",
-  },
-];
-
-/* ─── Plans ─── */
-const PLANS = [
-  {
-    name: "Стандарт",
-    tag: "Старт",
-    price: "120 000",
-    sub: "5 занятий · Автодром",
-    highlight: false,
-    includes: [
-      "Теория + практика",
-      "5 занятий по 90 мин на автодроме",
-      "Сертифицированный инструктор",
-      "Подготовка к экзамену в СпецЦОН",
-    ],
-    gift: null,
-  },
-  {
-    name: "Стандарт+",
-    tag: "Популярный",
-    price: "160 000",
-    sub: "10 занятий · Автодром + Город",
-    highlight: true,
-    includes: [
-      "Теория + практика",
-      "5 занятий на автодроме по 90 мин",
-      "5 занятий в городе по 60 мин",
-      "Сертифицированный инструктор",
-    ],
-    gift: "Тесты ПДД в подарок",
-  },
-  {
-    name: "Комфорт",
-    tag: "Максимум",
-    price: "200 000",
-    sub: "15 занятий · Автодром + Город",
-    highlight: false,
-    includes: [
-      "Теория + практика",
-      "15 занятий: автодром + город",
-      "График — индивидуально",
-      "Сертифицированный инструктор",
-    ],
-    gift: null,
-  },
-];
+const PROMO_ICONS = [Users, MousePointerClick];
 
 /* ─── Arrow CTA button ─── */
-function CTA({ dark }: { dark?: boolean }) {
+function CTA({ dark, label }: { dark?: boolean; label: string }) {
   return (
     <motion.a
       href="#register"
@@ -100,7 +41,7 @@ function CTA({ dark }: { dark?: boolean }) {
             }
       }
     >
-      Записаться
+      {label}
       <motion.span
         variants={{ rest: { x: 0 }, hover: { x: 5 } }}
         transition={{ type: "spring", stiffness: 400, damping: 20 }}
@@ -115,6 +56,9 @@ function CTA({ dark }: { dark?: boolean }) {
    Component
 ══════════════════════════════════════════ */
 export default function Pricing() {
+  const { t } = useLang();
+  const p = t.pricing;
+
   return (
     <section id="pricing" className="py-12 sm:py-24" style={{ background: "#FFFFFF" }}>
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
@@ -127,23 +71,25 @@ export default function Pricing() {
           transition={{ duration: 0.5 }}
           className="mb-12"
         >
-          <div className="label-tag mb-5">Стоимость</div>
+          <div className="label-tag mb-5">{p.tag}</div>
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <h2
               className="font-black leading-tight"
               style={{ fontSize: "clamp(2.2rem, 5vw, 3.2rem)", color: "#111827", letterSpacing: "-0.025em" }}
             >
-              Прайс
+              {p.title}
             </h2>
             <p className="text-sm" style={{ color: "#9CA3AF" }}>
-              Длительность полного курса — 2.5 месяца
+              {p.subtitle}
             </p>
           </div>
         </motion.div>
 
         {/* ── Promo banners ── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-10">
-          {PROMOS.map((d, i) => (
+          {p.promos.map((d, i) => {
+            const PromoIcon = PROMO_ICONS[i];
+            return (
             <motion.div
               key={d.title}
               initial={{ opacity: 0, y: 10 }}
@@ -163,7 +109,7 @@ export default function Pricing() {
                 className="w-10 h-10 flex items-center justify-center shrink-0 rounded-full"
                 style={{ border: "1.5px solid rgba(225,29,72,0.15)", background: "rgba(225,29,72,0.05)" }}
               >
-                <d.Icon size={16} strokeWidth={1.5} style={{ color: "#E11D48" }} />
+                <PromoIcon size={16} strokeWidth={1.5} style={{ color: "#E11D48" }} />
               </div>
 
               <div className="flex-1 min-w-0">
@@ -178,12 +124,13 @@ export default function Pricing() {
                 {d.badge}
               </div>
             </motion.div>
-          ))}
+            );
+          })}
         </div>
 
         {/* ── Plan cards ── */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
-          {PLANS.map((plan, i) => {
+          {p.plans.map((plan, i) => {
             const isCenter = plan.highlight;
 
             const card = (
@@ -277,25 +224,25 @@ export default function Pricing() {
                   ))}
                 </ul>
 
-                {/* Gift badge — white outline on dark card */}
+                {/* Gift badge — adapts to dark / light card */}
                 {plan.gift && (
                   <div
                     className="flex items-center gap-2 text-xs font-semibold mb-5 px-3.5 py-2.5 rounded-full"
                     style={{
-                      background: "rgba(255,255,255,0.08)",
-                      border: "1px solid rgba(255,255,255,0.2)",
-                      color: "rgba(255,255,255,0.75)",
+                      background: isCenter ? "rgba(255,255,255,0.08)" : "rgba(225,29,72,0.06)",
+                      border: isCenter ? "1px solid rgba(255,255,255,0.2)" : "1px solid rgba(225,29,72,0.18)",
+                      color: isCenter ? "rgba(255,255,255,0.75)" : "#E11D48",
                       width: "fit-content",
                     }}
                   >
                     <span className="relative flex w-2 h-2 shrink-0">
                       <span
                         className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
-                        style={{ background: "rgba(255,255,255,0.6)" }}
+                        style={{ background: isCenter ? "rgba(255,255,255,0.6)" : "rgba(225,29,72,0.5)" }}
                       />
                       <span
                         className="relative inline-flex rounded-full w-2 h-2"
-                        style={{ background: "rgba(255,255,255,0.8)" }}
+                        style={{ background: isCenter ? "rgba(255,255,255,0.8)" : "#E11D48" }}
                       />
                     </span>
                     {plan.gift}
@@ -303,7 +250,7 @@ export default function Pricing() {
                 )}
 
                 {/* CTA */}
-                <CTA dark={isCenter} />
+                <CTA dark={isCenter} label={p.cta} />
               </div>
             );
 
@@ -334,7 +281,7 @@ export default function Pricing() {
 
         {/* Footnote */}
         <p className="text-xs mt-8" style={{ color: "#D1D5DB" }}>
-          * Теоретический курс входит в стоимость. Дополнительные занятия докупаются отдельно.
+          {p.footnote}
         </p>
 
       </div>

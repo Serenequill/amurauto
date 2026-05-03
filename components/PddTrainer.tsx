@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { CheckCircle, XCircle, ArrowRight, RotateCcw } from "lucide-react";
+import { useLang } from "@/contexts/LangContext";
 
 /* ─── Same shadow as Hero dashboard card ─── */
 const CARD_SHADOW =
@@ -81,44 +82,17 @@ function SignSlippery() {
 }
 
 /* ══════════════════════════════════════
-   Questions
+   Question base (visual + answer key only)
+   Text comes from t.pdd.questions[i]
 ══════════════════════════════════════ */
-interface Question {
-  id: number;
-  Sign: () => React.ReactElement;
-  signLabel: string;
-  question: string;
-  answers: string[];
-  correct: number;
-  explanation: string;
-}
-
-const QUESTIONS: Question[] = [
-  { id: 1, Sign: SignKirpich, signLabel: "Знак 3.1",
-    question: "Что означает этот знак?",
-    answers: ["Въезд запрещён для всех ТС","Остановка запрещена","Парковка запрещена","Движение только прямо"],
-    correct: 0, explanation: "Знак 3.1 «Въезд запрещён» («Кирпич») — запрещает въезд всем ТС, кроме маршрутных по маршруту. Штраф — 10 МРП." },
-  { id: 2, Sign: SignYield, signLabel: "Знак 2.4",
-    question: "Что обязан сделать водитель при этом знаке?",
-    answers: ["Полностью остановиться","Пропустить ТС, имеющие преимущество","Двигаться со скоростью 20 км/ч","Включить аварийную сигнализацию"],
-    correct: 1, explanation: "Знак 2.4 «Уступите дорогу» — требует пропустить ТС на главной дороге. Полная остановка — только если есть помеха." },
-  { id: 3, Sign: SignSpeed60, signLabel: "Знак 3.24",
-    question: "Что ограничивает этот знак?",
-    answers: ["Минимальная скорость 60 км/ч","Максимальная скорость 60 км/ч","Рекомендуемая скорость 60 км/ч","Ограничение только для грузовиков"],
-    correct: 1, explanation: "Знак 3.24 — запрещает движение быстрее 60 км/ч для всех ТС до следующего знака или конца зоны." },
-  { id: 4, Sign: SignMainRoad, signLabel: "Знак 2.1",
-    question: "Что означает этот знак для водителя?",
-    answers: ["Дорога с односторонним движением","Преимущество у встречного транспорта","Вы едете по главной дороге","Начало кругового движения"],
-    correct: 2, explanation: "Знак 2.1 «Главная дорога» — на перекрёстках вы имеете преимущество перед ТС со второстепенных дорог." },
-  { id: 5, Sign: SignPedestrian, signLabel: "Знак 5.19",
-    question: "Что должен сделать водитель, увидев этот знак?",
-    answers: ["Ускориться, чтобы освободить переход","Уступить дорогу пешеходам","Остановиться на 3 минуты","Подать звуковой сигнал"],
-    correct: 1, explanation: "Знак 5.19 «Пешеходный переход» — водитель обязан уступить дорогу пешеходам, вступившим на переход." },
-  { id: 6, Sign: SignSlippery, signLabel: "Знак 1.15",
-    question: "О чём предупреждает этот знак?",
-    answers: ["Крутой спуск впереди","Скользкое дорожное покрытие","Сильный боковой ветер","Резкий поворот"],
-    correct: 1, explanation: "Знак 1.15 «Скользкая дорога» — пониженное сцепление шин. Снизьте скорость и увеличьте дистанцию." },
-];
+const QUESTIONS_BASE = [
+  { Sign: SignKirpich,   correct: 0 },
+  { Sign: SignYield,     correct: 1 },
+  { Sign: SignSpeed60,   correct: 1 },
+  { Sign: SignMainRoad,  correct: 2 },
+  { Sign: SignPedestrian,correct: 1 },
+  { Sign: SignSlippery,  correct: 1 },
+] as const;
 
 const LETTERS = ["А", "Б", "В", "Г"];
 
@@ -137,11 +111,20 @@ const popIn: Variants = {
    Main Component
 ══════════════════════════════════════ */
 export default function PddTrainer() {
-  const [idx, setIdx]         = useState(0);
+  const { t } = useLang();
+  const p = t.pdd;
+
+  /* Merge visual base with translated text */
+  const QUESTIONS = QUESTIONS_BASE.map((base, i) => ({
+    ...base,
+    ...p.questions[i],
+  }));
+
+  const [idx, setIdx]           = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
-  const [score, setScore]     = useState(0);
+  const [score, setScore]       = useState(0);
   const [finished, setFinished] = useState(false);
-  const [answers, setAnswers] = useState<(boolean | null)[]>(Array(QUESTIONS.length).fill(null));
+  const [answers, setAnswers]   = useState<(boolean | null)[]>(Array(QUESTIONS.length).fill(null));
 
   const q        = QUESTIONS[idx];
   const answered = selected !== null;
@@ -173,9 +156,9 @@ export default function PddTrainer() {
 
   const pct = Math.round((score / total) * 100);
   const resultColor = score === total ? "#16A34A" : score >= total * 0.7 ? "#D97706" : "#DC2626";
-  const resultLabel = score === total ? "Отлично! Готовы к экзамену 🏆"
-    : score >= total * 0.7 ? "Хороший результат! Ещё чуть-чуть 🎯"
-    : "Не расстраивайтесь — приходите учиться 🚗";
+  const resultLabel = score === total ? p.resultTexts.perfect
+    : score >= total * 0.7 ? p.resultTexts.good
+    : p.resultTexts.low;
 
   return (
     <section
@@ -215,7 +198,7 @@ export default function PddTrainer() {
             <div className="flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#DC2626" }} />
               <span className="mono text-[10px] uppercase tracking-[0.16em]" style={{ color: "#9CA3AF" }}>
-                Тренажёр ПДД · АмурАвто
+                {p.trainerLabel}
               </span>
             </div>
             <span className="mono text-[10px]" style={{ color: "#D1D5DB" }}>
@@ -231,19 +214,14 @@ export default function PddTrainer() {
                 className="font-black leading-none tracking-tight"
                 style={{ fontSize: "clamp(1.9rem, 6vw, 2.8rem)", color: "#111827", letterSpacing: "-0.03em" }}
               >
-                Узнай{" "}
-                <span
-                  style={{
-                    color: "#DC2626",
-                    WebkitBackgroundClip: "text",
-                  }}
-                >
-                  ЗНАК
+                {p.title1}{" "}
+                <span style={{ color: "#DC2626" }}>
+                  {p.titleAccent}
                 </span>
-                {" "}— проверь себя
+                {" "}{p.title2}
               </h2>
               <p className="text-xs mt-3" style={{ color: "#94A3B8" }}>
-                6 дорожных знаков · Выбери правильный ответ
+                {p.subtitle}
               </p>
 
               {/* Progress dots */}
@@ -296,7 +274,7 @@ export default function PddTrainer() {
                   </motion.div>
 
                   <p className="mono text-[10px] uppercase tracking-widest mb-2" style={{ color: "#9CA3AF" }}>
-                    Результат
+                    {p.resultLabel}
                   </p>
                   <h3 className="text-3xl font-black mb-1" style={{ color: "#111827" }}>
                     {score} / {total}
@@ -315,12 +293,12 @@ export default function PddTrainer() {
                     <motion.a href="#register" whileHover={{ y: -2 }}
                       className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-full font-bold text-white text-sm"
                       style={{ background: "linear-gradient(160deg,#C41E3A 0%,#9E1239 50%,#7D0E2D 100%)", boxShadow: "0 4px 14px rgba(158,18,57,0.35)" }}>
-                      Записаться <ArrowRight size={15} />
+                      {p.ctaEnroll} <ArrowRight size={15} />
                     </motion.a>
                     <motion.button onClick={reset} whileHover={{ y: -1 }}
                       className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-full font-semibold text-sm"
                       style={{ border: "1.5px solid #E2E8F0", color: "#6B7280", background: "#fff" }}>
-                      <RotateCcw size={14} /> Заново
+                      <RotateCcw size={14} /> {p.ctaRetry}
                     </motion.button>
                   </div>
                 </motion.div>
@@ -336,7 +314,7 @@ export default function PddTrainer() {
                     </span>
                     <span className="text-xs font-bold px-3 py-1 rounded-full"
                       style={{ background: "rgba(220,38,38,0.07)", color: "#DC2626" }}>
-                      {score} верных
+                      {p.scoreLabel(score)}
                     </span>
                   </div>
 
@@ -480,7 +458,7 @@ export default function PddTrainer() {
                           color: "#374151",
                         }}>
                           <span className="font-bold" style={{ color: selected === q.correct ? "#15803D" : "#B91C1C" }}>
-                            {selected === q.correct ? "Верно! " : "Не совсем. "}
+                            {selected === q.correct ? p.correct : p.wrong}
                           </span>
                           {q.explanation}
                         </div>
@@ -491,7 +469,7 @@ export default function PddTrainer() {
                   {answered && (
                     <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
                       className="text-center mono text-[10px] mt-3" style={{ color: "#D1D5DB" }}>
-                      {idx === total - 1 ? "Подсчёт результата…" : "Следующий вопрос через секунду…"}
+                      {idx === total - 1 ? p.counterLast : p.counterNext}
                     </motion.p>
                   )}
                 </motion.div>
@@ -503,7 +481,7 @@ export default function PddTrainer() {
           <div className="flex items-center justify-between px-6 sm:px-8 py-3"
             style={{ borderTop: "1px solid #F1F5F9" }}>
             <span className="mono text-[9px] uppercase tracking-widest" style={{ color: "#E2E8F0" }}>
-              ПДД · Республика Казахстан
+              {p.footerLabel}
             </span>
             <span className="mono text-[9px]" style={{ color: "#E2E8F0" }}>
               {score}/{total} · {Math.round((score/total)*100)}%

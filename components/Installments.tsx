@@ -2,14 +2,14 @@
 
 import { motion } from "framer-motion";
 import { CreditCard, CalendarCheck, ShieldCheck, ArrowRight } from "lucide-react";
+import { useLang } from "@/contexts/LangContext";
 
-const STEPS = [
-  { icon: CreditCard,    title: "Первый взнос",      desc: "Вносите часть суммы при записи — и сразу начинаете обучение" },
-  { icon: CalendarCheck, title: "Оплата в процессе", desc: "Остаток оплачиваете частями в удобное время" },
-  { icon: ShieldCheck,   title: "Без переплат",       desc: "Никаких процентов — только стоимость курса" },
-];
+const STEP_ICONS = [CreditCard, CalendarCheck, ShieldCheck];
 
 export default function Installments() {
+  const { t } = useLang();
+  const ins = t.installments;
+
   return (
     <section className="py-0" style={{ background: "#FFFFFF" }}>
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-10 sm:py-16">
@@ -26,7 +26,7 @@ export default function Installments() {
             className="absolute top-7 right-8 mono text-[9px] tracking-[0.22em] select-none pointer-events-none hidden sm:block"
             style={{ color: "#FFFFFF", opacity: 0.12 }}
           >
-            ИНДИВИДУАЛЬНЫЙ ГРАФИК ОПЛАТЫ
+            {ins.decorLabel}
           </div>
 
           <div className="relative px-8 sm:px-12 py-12 sm:py-14">
@@ -38,18 +38,18 @@ export default function Installments() {
                   className="inline-block text-[10px] font-black uppercase tracking-[0.22em] mb-5 px-3.5 py-1.5 rounded-full"
                   style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.3)" }}
                 >
-                  Удобная оплата
+                  {ins.tag}
                 </div>
                 <h2
                   className="font-black text-white leading-none"
                   style={{ fontSize: "clamp(2.4rem, 5vw, 3.5rem)", letterSpacing: "-0.035em" }}
                 >
-                  Оплата частями —
+                  {ins.title1}
                   <br />
-                  <span style={{ color: "rgba(255,255,255,0.28)" }}>без переплат</span>
+                  <span style={{ color: "rgba(255,255,255,0.28)" }}>{ins.title2}</span>
                 </h2>
                 <p className="text-sm mt-4 leading-relaxed" style={{ color: "rgba(255,255,255,0.32)" }}>
-                  Начните учиться уже сегодня. Условия обговариваются индивидуально с менеджером.
+                  {ins.subtitle}
                 </p>
               </div>
 
@@ -69,7 +69,7 @@ export default function Installments() {
                   variants={{ rest: { scale: 1 }, hover: { scale: 1.04 } }}
                   transition={{ type: "spring", stiffness: 400, damping: 18 }}
                 >
-                  Узнать условия
+                  {ins.cta}
                 </motion.span>
                 <motion.span
                   variants={{ rest: { x: 0 }, hover: { x: 4 } }}
@@ -82,7 +82,9 @@ export default function Installments() {
 
             {/* Step cards — transparent + backdrop-blur */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {STEPS.map((step, i) => (
+              {ins.steps.map((step, i) => {
+                const StepIcon = STEP_ICONS[i];
+                return (
                 <motion.div
                   key={step.title}
                   initial={{ opacity: 0, y: 12 }}
@@ -109,7 +111,7 @@ export default function Installments() {
                       border: "1px solid rgba(196,30,58,0.28)",
                     }}
                   >
-                    <step.icon size={18} style={{ color: "#F87171" }} />
+                    <StepIcon size={18} style={{ color: "#F87171" }} />
                   </div>
                   <div>
                     <p className="font-bold text-white text-sm mb-1">{step.title}</p>
@@ -118,7 +120,8 @@ export default function Installments() {
                     </p>
                   </div>
                 </motion.div>
-              ))}
+                );
+              })}
             </div>
 
           </div>

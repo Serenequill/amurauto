@@ -4,32 +4,37 @@ import { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useLang } from "@/contexts/LangContext";
 
 /*──────────────────────────────────────────
   Добавляйте преподавателей сюда.
   photo — путь к файлу в /public (PNG лучше)
   Если фото нет — оставьте photo: null
 ──────────────────────────────────────────*/
-const TEACHERS = [
+const TEACHERS_BASE = [
   {
-    name: "Еременко Наталья Викторовна",
-    title: "Преподаватель по теории",
+    name:       "Еременко Наталья Викторовна",
     experience: 5,
-    photo: "/teachers/IMG_3898.JPEG",
-    bio: "Высокий уровень подготовки курсантов и стабильные результаты. Умеет понятно и грамотно объяснять материал. Благодаря профессиональному подходу курсанты уверенно осваивают теорию и успешно сдают экзамены.",
+    photo:      "/teachers/IMG_3898.JPEG",
   },
 ];
-
-function plural(n: number) {
-  if (n % 10 === 1 && n % 100 !== 11) return "год";
-  if ([2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100)) return "года";
-  return "лет";
-}
 
 const CARD_W = 300;
 const CARD_GAP = 24;
 
-function TeacherCard({ teacher }: { teacher: (typeof TEACHERS)[0] }) {
+function TeacherCard({
+  teacher,
+  title,
+  bio,
+  experienceLabel,
+  photoSoon,
+}: {
+  teacher: (typeof TEACHERS_BASE)[0];
+  title: string;
+  bio: string;
+  experienceLabel: string;
+  photoSoon: string;
+}) {
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -49,7 +54,7 @@ function TeacherCard({ teacher }: { teacher: (typeof TEACHERS)[0] }) {
         background: "#E11D48",
       }}
     >
-      {/* Photo — inset with padding so red shows around it */}
+      {/* Photo */}
       <div className="px-5 pt-6" style={{ height: 370 }}>
         <motion.div
           animate={{ scale: hovered ? 1.05 : 1 }}
@@ -74,7 +79,7 @@ function TeacherCard({ teacher }: { teacher: (typeof TEACHERS)[0] }) {
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                 <circle cx="12" cy="7" r="4" />
               </svg>
-              <span className="text-xs mt-2" style={{ color: "rgba(255,255,255,0.45)" }}>Фото появится скоро</span>
+              <span className="text-xs mt-2" style={{ color: "rgba(255,255,255,0.45)" }}>{photoSoon}</span>
             </div>
           )}
         </motion.div>
@@ -87,11 +92,8 @@ function TeacherCard({ teacher }: { teacher: (typeof TEACHERS)[0] }) {
           className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.16em] px-3 py-1.5 rounded-full mb-4"
           style={{ background: "rgba(0,0,0,0.2)", color: "rgba(255,255,255,0.75)" }}
         >
-          <span
-            className="w-1.5 h-1.5 rounded-full"
-            style={{ background: "rgba(255,255,255,0.6)" }}
-          />
-          Стаж {teacher.experience} {plural(teacher.experience)}
+          <span className="w-1.5 h-1.5 rounded-full" style={{ background: "rgba(255,255,255,0.6)" }} />
+          {experienceLabel}
         </div>
 
         <p
@@ -101,11 +103,11 @@ function TeacherCard({ teacher }: { teacher: (typeof TEACHERS)[0] }) {
           {teacher.name}
         </p>
         <p className="text-xs mt-1.5 font-medium" style={{ color: "rgba(255,255,255,0.55)" }}>
-          {teacher.title}
+          {title}
         </p>
-        {teacher.bio && (
+        {bio && (
           <p className="text-xs mt-3 leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>
-            {teacher.bio}
+            {bio}
           </p>
         )}
       </div>
@@ -114,11 +116,12 @@ function TeacherCard({ teacher }: { teacher: (typeof TEACHERS)[0] }) {
 }
 
 export default function Teachers() {
+  const { t } = useLang();
+  const tr = t.teachers;
+
   const [current, setCurrent] = useState(0);
-
   const prev = () => setCurrent((c) => Math.max(0, c - 1));
-  const next = () => setCurrent((c) => Math.min(TEACHERS.length - 1, c + 1));
-
+  const next = () => setCurrent((c) => Math.min(TEACHERS_BASE.length - 1, c + 1));
   const offset = -(current * (CARD_W + CARD_GAP));
 
   return (
@@ -133,21 +136,21 @@ export default function Teachers() {
               style={{ color: "#E11D48" }}
             >
               <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#E11D48" }} />
-              Команда
+              {tr.tag}
             </div>
             <h2
               className="font-black leading-tight text-white"
               style={{ fontSize: "clamp(2rem, 4vw, 3rem)", letterSpacing: "-0.025em" }}
             >
-              Преподаватели по теории
+              {tr.title}
             </h2>
             <p className="text-sm mt-2" style={{ color: "rgba(255,255,255,0.3)" }}>
-              {TEACHERS.length} {TEACHERS.length === 1 ? "преподаватель" : "преподавателя"} · Высшая категория
+              {tr.subtitle(TEACHERS_BASE.length)}
             </p>
           </div>
 
           {/* Arrows — only when multiple teachers */}
-          {TEACHERS.length > 1 && (
+          {TEACHERS_BASE.length > 1 && (
             <div className="flex items-center gap-2">
               <button
                 onClick={prev}
@@ -163,10 +166,10 @@ export default function Teachers() {
               </button>
               <button
                 onClick={next}
-                disabled={current === TEACHERS.length - 1}
+                disabled={current === TEACHERS_BASE.length - 1}
                 className="w-10 h-10 flex items-center justify-center rounded-full transition-all"
                 style={{
-                  background: current === TEACHERS.length - 1 ? "rgba(225,29,72,0.3)" : "#E11D48",
+                  background: current === TEACHERS_BASE.length - 1 ? "rgba(225,29,72,0.3)" : "#E11D48",
                   color: "#fff",
                 }}
               >
@@ -184,16 +187,26 @@ export default function Teachers() {
             animate={{ x: offset }}
             transition={{ type: "spring", stiffness: 280, damping: 32 }}
           >
-            {TEACHERS.map((t) => (
-              <TeacherCard key={t.name} teacher={t} />
-            ))}
+            {TEACHERS_BASE.map((teacher, i) => {
+              const dict = tr.teachers[i] ?? tr.teachers[0];
+              return (
+                <TeacherCard
+                  key={teacher.name}
+                  teacher={teacher}
+                  title={dict.title}
+                  bio={dict.bio}
+                  experienceLabel={tr.experience(teacher.experience)}
+                  photoSoon={tr.photoSoon}
+                />
+              );
+            })}
           </motion.div>
         </div>
 
         {/* ── Dots ── */}
-        {TEACHERS.length > 1 && (
+        {TEACHERS_BASE.length > 1 && (
           <div className="flex gap-1.5 mt-10">
-            {TEACHERS.map((_, i) => (
+            {TEACHERS_BASE.map((_, i) => (
               <button
                 key={i}
                 onClick={() => setCurrent(i)}

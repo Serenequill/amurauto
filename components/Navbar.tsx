@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Phone } from "lucide-react";
+import Image from "next/image";
+import { useLang } from "@/contexts/LangContext";
 
 function InstagramIcon({ size = 15 }: { size?: number }) {
   return (
@@ -12,24 +15,25 @@ function InstagramIcon({ size = 15 }: { size?: number }) {
     </svg>
   );
 }
-import Image from "next/image";
 
-const LINKS = [
-  { label: "Филиалы",  href: "#branches" },
-  { label: "Тест ПДД", href: "#signs" },
-  { label: "Цены",     href: "#pricing" },
-  { label: "О нас",    href: "#about" },
-  { label: "Команда",  href: "#teachers" },
-  { label: "Вопросы",  href: "#faq" },
-];
 
 export default function Navbar() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen]         = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { lang, setLang, t }    = useLang();
+
+  const LINKS = [
+    { label: t.nav.branches, href: "#branches" },
+    { label: t.nav.pdd,      href: "#signs"    },
+    { label: t.nav.pricing,  href: "#pricing"  },
+    { label: t.nav.about,    href: "#about"    },
+    { label: t.nav.team,     href: "#teachers" },
+    { label: t.nav.faq,      href: "#faq"      },
+  ];
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", fn);
+    window.addEventListener("scroll", fn, { passive: true });
     return () => window.removeEventListener("scroll", fn);
   }, []);
 
@@ -37,11 +41,11 @@ export default function Navbar() {
     <header
       className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
       style={{
-        background: "rgba(255,255,255,0.85)",
-        backdropFilter: "blur(12px)",
-        WebkitBackdropFilter: "blur(12px)",
-        borderBottom: "1px solid #F1F5F9",
-        boxShadow: scrolled ? "0 1px 20px rgba(0,0,0,0.06)" : "none",
+        background: "rgba(255,255,255,0.92)",
+        backdropFilter: "blur(16px)",
+        WebkitBackdropFilter: "blur(16px)",
+        borderBottom: "1px solid rgba(241,245,249,0.8)",
+        boxShadow: scrolled ? "0 2px 24px rgba(0,0,0,0.07)" : "none",
       }}
     >
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
@@ -61,57 +65,75 @@ export default function Navbar() {
           </a>
 
           {/* ── Desktop nav ── */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-7">
             {LINKS.map((l) => (
               <a
                 key={l.href}
                 href={l.href}
-                className="relative group flex flex-col items-center gap-1 py-1"
+                className="relative group py-1"
               >
                 <span
-                  className="text-xs font-semibold uppercase tracking-widest transition-colors duration-200"
-                  style={{ color: "#000000", letterSpacing: "0.1em" }}
+                  className="text-xs font-semibold uppercase transition-colors duration-200"
+                  style={{ color: "#111827", letterSpacing: "0.1em" }}
                   onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#E11D48")}
-                  onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "#000000")}
+                  onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "#111827")}
                 >
                   {l.label}
                 </span>
-                {/* Red dot indicator on hover */}
+                {/* Sliding red underline */}
                 <span
-                  className="block w-1 h-1 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200 scale-0 group-hover:scale-100"
+                  className="absolute bottom-0 left-0 h-[2px] w-0 group-hover:w-full rounded-full transition-all duration-200"
                   style={{ background: "#E11D48" }}
                 />
               </a>
             ))}
           </nav>
 
-          {/* ── CTA button ── */}
-          <div className="hidden md:flex items-center">
-            <a
+          {/* ── Lang switcher + CTA ── */}
+          <div className="hidden md:flex items-center gap-3">
+
+            {/* RU | KZ toggle */}
+            <div
+              className="flex items-center rounded-full p-0.5"
+              style={{ background: "#F3F4F6", border: "1px solid #E5E7EB" }}
+            >
+              {(["ru", "kz"] as const).map((l) => (
+                <button
+                  key={l}
+                  onClick={() => setLang(l)}
+                  className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider transition-all duration-200"
+                  style={{
+                    background: lang === l ? "#E11D48" : "transparent",
+                    color:      lang === l ? "#FFFFFF" : "#9CA3AF",
+                    letterSpacing: "0.1em",
+                  }}
+                >
+                  {l.toUpperCase()}
+                </button>
+              ))}
+            </div>
+
+            <motion.a
               href="tel:87776667096"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className="relative inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full font-bold text-xs text-white overflow-hidden"
               style={{
-                background: "transparent",
-                color: "#E11D48",
-                border: "1.5px solid #E11D48",
-                letterSpacing: "0.08em",
-              }}
-              onMouseEnter={(e) => {
-                const el = e.currentTarget as HTMLElement;
-                el.style.background = "rgba(225,29,72,0.06)";
-                el.style.borderColor = "#BE123C";
-                el.style.color = "#BE123C";
-              }}
-              onMouseLeave={(e) => {
-                const el = e.currentTarget as HTMLElement;
-                el.style.background = "transparent";
-                el.style.borderColor = "#E11D48";
-                el.style.color = "#E11D48";
+                background: "#E11D48",
+                letterSpacing: "0.06em",
+                boxShadow: "0 4px 16px rgba(225,29,72,0.35)",
               }}
             >
-              <Phone size={13} />
-              Позвонить
-            </a>
+              {/* Pulse ring */}
+              <span className="relative flex shrink-0">
+                <span
+                  className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-50"
+                  style={{ background: "rgba(255,255,255,0.6)" }}
+                />
+                <Phone size={13} className="relative" />
+              </span>
+              {t.nav.call}
+            </motion.a>
           </div>
 
           {/* ── Mobile controls ── */}
@@ -133,53 +155,82 @@ export default function Navbar() {
               {open ? <X size={18} /> : <Menu size={18} />}
             </button>
           </div>
+
         </div>
       </div>
 
       {/* ── Mobile menu ── */}
-      {open && (
-        <div
-          className="md:hidden px-6 pb-6 pt-3"
-          style={{ background: "rgba(255,255,255,0.97)", borderTop: "1px solid #F1F5F9" }}
-        >
-          <nav className="flex flex-col">
-            {LINKS.map((l) => (
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.22, ease: "easeOut" }}
+            className="md:hidden px-6 pb-6 pt-3"
+            style={{ background: "rgba(255,255,255,0.97)", borderTop: "1px solid #F1F5F9" }}
+          >
+            <nav className="flex flex-col">
+              {LINKS.map((l) => (
+                <a
+                  key={l.href}
+                  href={l.href}
+                  onClick={() => setOpen(false)}
+                  className="flex items-center justify-between py-3.5 text-sm font-semibold transition-colors"
+                  style={{ color: "#111827", borderBottom: "1px solid #F9FAFB" }}
+                  onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#E11D48")}
+                  onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "#111827")}
+                >
+                  {l.label}
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#E11D48" }} />
+                </a>
+              ))}
               <a
-                key={l.href}
-                href={l.href}
+                href="tel:87776667096"
                 onClick={() => setOpen(false)}
-                className="flex items-center justify-between py-3.5 text-sm font-semibold transition-colors"
-                style={{ color: "#111827", borderBottom: "1px solid #F9FAFB" }}
-                onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#E11D48")}
-                onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "#111827")}
+                className="flex items-center justify-center gap-2 py-3.5 mt-4 text-sm font-bold rounded-full text-white transition-all"
+                style={{ background: "#E11D48", boxShadow: "0 4px 14px rgba(225,29,72,0.3)" }}
               >
-                {l.label}
-                <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#E11D48" }} />
+                <Phone size={15} />
+                8-777-666-70-96
               </a>
-            ))}
-            <a
-              href="tel:87776667096"
-              onClick={() => setOpen(false)}
-              className="flex items-center justify-center gap-2 py-3.5 mt-4 text-sm font-bold rounded-full text-white transition-all"
-              style={{ background: "#E11D48", boxShadow: "0 4px 14px rgba(225,29,72,0.3)" }}
-            >
-              <Phone size={15} />
-              8-777-666-70-96
-            </a>
-            <a
-              href="https://www.instagram.com/amurauto.kz?igsh=MWNnYmNuM241NjVsZA=="
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => setOpen(false)}
-              className="flex items-center justify-center gap-2 py-3 mt-2 text-sm font-bold rounded-full transition-all"
-              style={{ background: "rgba(225,29,72,0.06)", color: "#E11D48", border: "1px solid rgba(225,29,72,0.15)" }}
-            >
-              <InstagramIcon size={15} />
-              @amurauto.kz
-            </a>
-          </nav>
-        </div>
-      )}
+              <a
+                href="https://www.instagram.com/amurauto.kz?igsh=MWNnYmNuM241NjVsZA=="
+                target="_blank" rel="noopener noreferrer"
+                onClick={() => setOpen(false)}
+                className="flex items-center justify-center gap-2 py-3 mt-2 text-sm font-bold rounded-full transition-all"
+                style={{ background: "rgba(225,29,72,0.06)", color: "#E11D48", border: "1px solid rgba(225,29,72,0.15)" }}
+              >
+                <InstagramIcon size={15} />
+                @amurauto.kz
+              </a>
+
+              {/* Lang switcher — mobile */}
+              <div className="flex items-center justify-center gap-2 mt-4">
+                <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: "#9CA3AF" }}>Язык / Тіл:</span>
+                <div
+                  className="flex items-center rounded-full p-0.5"
+                  style={{ background: "#F3F4F6", border: "1px solid #E5E7EB" }}
+                >
+                  {(["ru", "kz"] as const).map((l) => (
+                    <button
+                      key={l}
+                      onClick={() => { setLang(l); setOpen(false); }}
+                      className="px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider transition-all duration-200"
+                      style={{
+                        background: lang === l ? "#E11D48" : "transparent",
+                        color:      lang === l ? "#FFFFFF" : "#9CA3AF",
+                      }}
+                    >
+                      {l.toUpperCase()}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

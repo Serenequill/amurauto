@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Phone, ExternalLink, Clock, Navigation, ChevronLeft, ChevronRight } from "lucide-react";
+import { useLang } from "@/contexts/LangContext";
 
 /* ─── Branch data ─── */
 const BRANCHES = [
@@ -70,11 +71,17 @@ function MapBlock({
   mapKey,
   mapSrc,
   height,
+  overviewLabel,
+  mapTitleAll,
+  mapTitleBranch,
 }: {
   activeBranch: Branch | undefined;
   mapKey: string | number;
   mapSrc: string;
   height: string;
+  overviewLabel: string;
+  mapTitleAll: string;
+  mapTitleBranch: (name: string) => string;
 }) {
   const coords = activeBranch
     ? `${activeBranch.lat.toFixed(4)}°N · ${activeBranch.lng.toFixed(4)}°E`
@@ -107,7 +114,7 @@ function MapBlock({
               height="100%"
               style={{ border: "none", display: "block" }}
               allowFullScreen
-              title={activeBranch ? `Филиал ${activeBranch.name}` : "Все филиалы АмурАвто"}
+              title={activeBranch ? mapTitleBranch(activeBranch.name) : mapTitleAll}
             />
           </motion.div>
         </AnimatePresence>
@@ -118,7 +125,7 @@ function MapBlock({
         <div className="flex items-center gap-2">
           <div className="w-1.5 h-1.5 rounded-full" style={{ background: "#E11D48" }} />
           <span className="mono text-[10px]" style={{ color: "#9CA3AF" }}>
-            {activeBranch ? `ФИЛИАЛ · ${activeBranch.name.toUpperCase()}` : "АЛМАТЫ · 6 ФИЛИАЛОВ"}
+            {activeBranch ? `ФИЛИАЛ · ${activeBranch.name.toUpperCase()}` : overviewLabel}
           </span>
         </div>
         <span className="mono text-[9px]" style={{ color: "#E2E8F0" }}>{coords}</span>
@@ -132,10 +139,14 @@ function BranchCard({
   branch,
   isActive,
   onSelect,
+  branchLabel,
+  openIn2Gis,
 }: {
   branch: Branch;
   isActive: boolean;
   onSelect: () => void;
+  branchLabel: (tag: string) => string;
+  openIn2Gis: string;
 }) {
   return (
     <motion.button
@@ -174,7 +185,7 @@ function BranchCard({
             className="text-[10px] font-black uppercase tracking-widest block mb-0.5"
             style={{ color: isActive ? "#DC2626" : "#9CA3AF" }}
           >
-            Филиал {branch.tag}
+            {branchLabel(branch.tag)}
           </span>
           <p className="font-black text-base leading-tight" style={{ color: "#111827" }}>
             {branch.name}
@@ -238,7 +249,7 @@ function BranchCard({
                 style={{ color: "#DC2626" }}
               >
                 <ExternalLink size={11} />
-                Открыть в 2ГИС
+                {openIn2Gis}
               </a>
             </div>
           </motion.div>
@@ -250,6 +261,9 @@ function BranchCard({
 
 /* ─── Main section ─── */
 export default function BranchesSection() {
+  const { t } = useLang();
+  const b = t.branches;
+
   const [activeId, setActiveId] = useState<number | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -267,7 +281,12 @@ export default function BranchesSection() {
     scrollRef.current?.scrollBy({ left: dir === "left" ? -280 : 280, behavior: "smooth" });
   };
 
-  const mapProps = { activeBranch, mapKey, mapSrc };
+  const mapProps = {
+    activeBranch, mapKey, mapSrc,
+    overviewLabel:  b.overviewLabel,
+    mapTitleAll:    b.mapTitleAll,
+    mapTitleBranch: b.mapTitleBranch,
+  };
 
   return (
     <section id="branches" className="py-12 sm:py-24" style={{ background: "#FFFFFF" }}>
@@ -281,16 +300,16 @@ export default function BranchesSection() {
           transition={{ duration: 0.5 }}
           className="mb-10 sm:mb-14"
         >
-          <div className="label-tag mb-5">Адреса</div>
+          <div className="label-tag mb-5">{b.tag}</div>
           <h2
             className="font-black leading-tight"
             style={{ fontSize: "clamp(2.2rem, 5vw, 3.2rem)", color: "#111827", letterSpacing: "-0.025em" }}
           >
-            6 филиалов{" "}
-            <span style={{ color: "#DC2626" }}>в Алматы</span>
+            {b.title}{" "}
+            <span style={{ color: "#DC2626" }}>{b.titleAccent}</span>
           </h2>
           <p className="text-sm mt-3" style={{ color: "#9CA3AF" }}>
-            Нажмите на карточку — карта переместится на нужный филиал
+            {b.subtitle}
           </p>
         </motion.div>
 
@@ -307,6 +326,8 @@ export default function BranchesSection() {
                 branch={branch}
                 isActive={activeId === branch.id}
                 onSelect={() => select(branch.id)}
+                branchLabel={b.branchLabel}
+                openIn2Gis={b.openIn2Gis}
               />
             ))}
 
@@ -326,7 +347,7 @@ export default function BranchesSection() {
                   (e.currentTarget as HTMLElement).style.borderColor = "#F1F5F9";
                 }}
               >
-                ← Показать все филиалы
+                {b.showAll}
               </motion.button>
             )}
           </div>
@@ -349,7 +370,7 @@ export default function BranchesSection() {
           {/* Scroll arrows */}
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-medium" style={{ color: "#9CA3AF" }}>
-              Прокрутите →
+              {b.scrollHint}
             </span>
             <div className="flex gap-2">
               <button
@@ -403,7 +424,7 @@ export default function BranchesSection() {
                     className="text-[10px] font-black uppercase tracking-widest block mb-0.5"
                     style={{ color: isActive ? "#DC2626" : "#9CA3AF" }}
                   >
-                    Филиал {branch.tag}
+                    {b.branchLabel(branch.tag)}
                   </span>
                   <p className="font-black text-sm leading-tight mb-2" style={{ color: "#111827" }}>
                     {branch.name}
@@ -427,7 +448,7 @@ export default function BranchesSection() {
                       style={{ color: "#DC2626", borderTop: "1px solid #F1F5F9", display: "flex" }}
                     >
                       <ExternalLink size={10} />
-                      Открыть в 2ГИС
+                      {b.openIn2Gis}
                     </a>
                   )}
                 </button>
@@ -459,7 +480,7 @@ export default function BranchesSection() {
           style={{ background: "#F9FAFB", border: "1px solid #F1F5F9" }}
         >
           <p className="text-sm mb-1.5" style={{ color: "#9CA3AF" }}>
-            Единый колл-центр — для всех филиалов
+            {b.callCenterNote}
           </p>
           <a
             href="tel:87776667096"

@@ -4,29 +4,14 @@ import { useState } from "react";
 import { X, FileText, ShieldCheck, Clock, Car, Award, ExternalLink } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import TiltCard from "@/components/TiltCard";
+import { useLang } from "@/contexts/LangContext";
 
-const FACTS = [
-  {
-    icon: Clock,
-    value: "12 лет",
-    label: "обучаем водителей",
-    accent: true,
-  },
-  {
-    icon: Car,
-    value: "Свой автопарк",
-    label: "15+ современных авто",
-    accent: false,
-  },
-  {
-    icon: Award,
-    value: "100%",
-    label: "сертифицированные инструкторы",
-    accent: true,
-  },
-];
+const FACT_ICONS = [Clock, Car, Award];
 
 export default function TrustBar() {
+  const { t } = useLang();
+  const tb = t.trustBar;
+
   const [modalOpen, setModalOpen] = useState(false);
 
   return (
@@ -65,7 +50,7 @@ export default function TrustBar() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-0.5">
                   <p className="font-black text-sm" style={{ color: "#0F172A" }}>
-                    Лицензированная автошкола
+                    {tb.licensedSchool}
                   </p>
                   <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: "#16A34A" }} />
                 </div>
@@ -74,7 +59,7 @@ export default function TrustBar() {
                   style={{ background: "#E11D48", boxShadow: "0 2px 8px rgba(225,29,72,0.3)" }}>
                   <ShieldCheck size={11} style={{ color: "#fff" }} />
                   <span className="text-[10px] font-black tracking-wide" style={{ color: "#fff" }}>
-                    Гос. лицензия МВД РК · ДП № 00862
+                    {tb.licenseNumber}
                   </span>
                 </div>
                 <br />
@@ -86,7 +71,7 @@ export default function TrustBar() {
                   onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.opacity = "1"; }}
                 >
                   <FileText size={12} />
-                  Посмотреть документ
+                  {tb.viewDoc}
                   <ExternalLink size={11} />
                 </button>
               </div>
@@ -112,28 +97,32 @@ export default function TrustBar() {
                 style={{ fontSize: "9px", letterSpacing: "0.1em", color: "#D1D5DB", opacity: 0.7 }}>
                 AMUR-AUTO-v2
               </span>
-              {FACTS.map((f, i) => (
-                <div
-                  key={f.label}
-                  className="flex flex-col items-center justify-center py-5 px-3 text-center"
-                  style={{
-                    background: "#FFFFFF",
-                    borderRight: i < FACTS.length - 1 ? "1px solid #F1F5F9" : "none",
-                  }}
-                >
-                  <div className="w-8 h-8 rounded-xl flex items-center justify-center mb-2"
-                    style={{ background: f.accent ? "rgba(225,29,72,0.06)" : "#F9FAFB" }}>
-                    <f.icon size={15} style={{ color: f.accent ? "#E11D48" : "#94A3B8" }} />
+              {tb.facts.map((f, i) => {
+                const Icon = FACT_ICONS[i];
+                const accent = i !== 1;
+                return (
+                  <div
+                    key={f.label}
+                    className="flex flex-col items-center justify-center py-5 px-3 text-center"
+                    style={{
+                      background: "#FFFFFF",
+                      borderRight: i < tb.facts.length - 1 ? "1px solid #F1F5F9" : "none",
+                    }}
+                  >
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center mb-2"
+                      style={{ background: accent ? "rgba(225,29,72,0.06)" : "#F9FAFB" }}>
+                      <Icon size={15} style={{ color: accent ? "#E11D48" : "#94A3B8" }} />
+                    </div>
+                    <p className="font-black text-sm leading-tight"
+                      style={{ color: accent ? "#E11D48" : "#0F172A", letterSpacing: "-0.02em" }}>
+                      {f.value}
+                    </p>
+                    <p className="text-[10px] font-medium mt-1 leading-snug" style={{ color: "#94A3B8" }}>
+                      {f.label}
+                    </p>
                   </div>
-                  <p className="font-black text-sm leading-tight"
-                    style={{ color: f.accent ? "#E11D48" : "#0F172A", letterSpacing: "-0.02em" }}>
-                    {f.value}
-                  </p>
-                  <p className="text-[10px] font-medium mt-1 leading-snug" style={{ color: "#94A3B8" }}>
-                    {f.label}
-                  </p>
-                </div>
-              ))}
+                );
+              })}
             </TiltCard>
             </motion.div>
 
@@ -174,8 +163,8 @@ export default function TrustBar() {
                     <ShieldCheck size={18} style={{ color: "#E11D48" }} />
                   </div>
                   <div>
-                    <p className="font-black text-sm" style={{ color: "#0F172A" }}>Лицензия автошколы</p>
-                    <p className="text-xs" style={{ color: "#94A3B8" }}>МВД РК · ДП серия № 00862</p>
+                    <p className="font-black text-sm" style={{ color: "#0F172A" }}>{tb.modalTitle}</p>
+                    <p className="text-xs" style={{ color: "#94A3B8" }}>{tb.modalSub}</p>
                   </div>
                 </div>
                 <button
@@ -194,7 +183,7 @@ export default function TrustBar() {
                 style={{ border: "1px solid #F1F5F9" }}>
                 <img
                   src="/license.jpeg"
-                  alt="Государственная лицензия АмурАвто"
+                  alt={tb.modalTitle}
                   style={{ width: "100%", display: "block", borderRadius: "16px" }}
                 />
               </div>
@@ -202,12 +191,12 @@ export default function TrustBar() {
               {/* Footer */}
               <div className="px-6 pb-5 flex items-center justify-between">
                 <p className="text-xs" style={{ color: "#CBD5E1" }}>
-                  Комитет дорожной полиции МВД РК · Категория B
+                  {tb.modalFooter}
                 </p>
                 <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full"
                   style={{ background: "rgba(22,163,74,0.08)", color: "#16A34A" }}>
                   <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#16A34A" }} />
-                  Действующая
+                  {tb.active}
                 </span>
               </div>
             </motion.div>

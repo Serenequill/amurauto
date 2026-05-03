@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Phone, Award, Car, CheckCircle, ShieldCheck } from "lucide-react";
 import Magnetic from "@/components/Magnetic";
+import { useLang } from "@/contexts/LangContext";
 
 /* ─── Palette ─── */
 const RED      = "#9E1239";
@@ -12,23 +13,20 @@ const RED_GLOW = "rgba(158,18,57,0.30)";
 
 /* ─── Two-layer premium shadow ─── */
 const CARD_SHADOW =
-  "0 2px 4px rgba(0,0,0,0.07), " +          /* плотная — прямо под объектом */
-  "0 8px 16px rgba(0,0,0,0.05), " +          /* средняя */
-  "0 28px 64px rgba(0,0,0,0.08), " +         /* большая мягкая */
-  "inset 0 1px 0 rgba(255,255,255,0.95)";    /* бликовая полоска сверху */
+  "0 2px 4px rgba(0,0,0,0.07), " +
+  "0 8px 16px rgba(0,0,0,0.05), " +
+  "0 28px 64px rgba(0,0,0,0.08), " +
+  "inset 0 1px 0 rgba(255,255,255,0.95)";
 
 const CARD_SHADOW_SM =
   "0 1px 3px rgba(0,0,0,0.06), " +
   "0 6px 20px rgba(0,0,0,0.07), " +
   "inset 0 1px 0 rgba(255,255,255,0.95)";
 
-const STATS = [
-  { value: "1000+", label: "учеников" },
-  { value: "6",     label: "филиалов" },
-  { value: "15+",   label: "автомобилей" },
-];
-
 export default function HeroSection() {
+  const { t } = useLang();
+  const h = t.hero;
+
   return (
     <section
       id="hero"
@@ -69,7 +67,7 @@ export default function HeroSection() {
               <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#334155" }} />
               <span className="text-xs font-semibold uppercase tracking-widest"
                 style={{ color: "#334155", letterSpacing: "0.11em" }}>
-                №1 по сдаче с первого раза · Алматы
+                {h.badge}
               </span>
             </motion.div>
 
@@ -82,18 +80,17 @@ export default function HeroSection() {
               style={{ fontSize: "clamp(2.4rem, 5vw, 4rem)", color: "#0F172A",
                 letterSpacing: "-0.03em", lineHeight: 1.18 }}
             >
-              Сядь за руль{" "}
-              {/* Gradient text на "уверенно" + убрали тире */}
+              {h.title1}{" "}
               <span style={{
                 background: `linear-gradient(135deg, #C41E3A 0%, ${RED} 55%, ${RED_DARK} 100%)`,
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
               }}>
-                уверенно
+                {h.titleAccent}
               </span>
               <br />
-              с первого раза
+              {h.title2}
             </motion.h1>
 
             {/* ── Подзаголовок — сильный текст ── */}
@@ -104,11 +101,11 @@ export default function HeroSection() {
               className="mb-7 max-w-[440px]"
             >
               <p className="text-lg" style={{ color: "#94A3B8", lineHeight: 1.85, fontWeight: 400 }}>
-                Система обучения, которая доводит до получения прав.
+                {h.sub1}
               </p>
               <p className="text-xs mt-3 font-medium"
                 style={{ color: "#CBD5E1", letterSpacing: "0.06em" }}>
-                Теория · Практика · Подготовка к экзамену
+                {h.sub2}
               </p>
             </motion.div>
 
@@ -131,7 +128,7 @@ export default function HeroSection() {
                 <span className="relative inline-flex w-2 h-2 rounded-full" style={{ background: "#F59E0B" }} />
               </span>
               <span className="text-xs font-medium" style={{ color: "#92400E" }}>
-                Осталось <strong style={{ fontWeight: 700 }}>12 мест</strong> на этот месяц
+                {h.urgency(12)}
               </span>
             </motion.div>
 
@@ -162,7 +159,7 @@ export default function HeroSection() {
                     el.style.boxShadow = `0 2px 4px rgba(0,0,0,0.12), 0 8px 24px ${RED_GLOW}, inset 0 1px 0 rgba(255,255,255,0.15)`;
                   }}
                 >
-                  Записаться на обучение
+                  {h.cta1}
                   <ArrowRight size={16} />
                 </a>
               </Magnetic>
@@ -191,7 +188,7 @@ export default function HeroSection() {
                 }}
               >
                 <Phone size={15} />
-                Получить консультацию
+                {h.cta2}
               </a>
             </motion.div>
 
@@ -203,7 +200,7 @@ export default function HeroSection() {
               className="flex items-center gap-6 pt-7"
               style={{ borderTop: "1px solid #F1F5F9" }}
             >
-              {STATS.map((s, i) => (
+              {h.stats.map((s, i) => (
                 <div key={s.label} className="flex items-center gap-6">
                   {i > 0 && (
                     <div style={{ width: 1, height: 22, background: "#E2E8F0", flexShrink: 0 }} />
@@ -247,9 +244,9 @@ export default function HeroSection() {
                 <div className="flex items-center justify-between mb-5">
                   <div>
                     <p className="text-[10px] font-bold uppercase tracking-widest mb-0.5"
-                      style={{ color: "#CBD5E1" }}>Прогресс ученика</p>
+                      style={{ color: "#CBD5E1" }}>{h.card.progressLabel}</p>
                     <p className="font-black text-base"
-                      style={{ color: "#0F172A", letterSpacing: "-0.02em" }}>Пакет «Стандарт+»</p>
+                      style={{ color: "#0F172A", letterSpacing: "-0.02em" }}>{h.card.plan}</p>
                   </div>
                   {/* "Активен" с glow-пульсацией */}
                   <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full"
@@ -265,14 +262,14 @@ export default function HeroSection() {
                       <span className="relative inline-flex w-1.5 h-1.5 rounded-full"
                         style={{ background: "#16A34A" }} />
                     </span>
-                    Активен
+                    {h.card.active}
                   </span>
                 </div>
 
                 {/* ── Прогресс-бар с шиммером ── */}
                 <div className="mb-5">
                   <div className="flex justify-between mb-2">
-                    <span className="text-xs font-medium" style={{ color: "#94A3B8" }}>Общий прогресс</span>
+                    <span className="text-xs font-medium" style={{ color: "#94A3B8" }}>{h.card.totalProgress}</span>
                     <span className="text-xs font-black" style={{ color: "#0F172A" }}>62%</span>
                   </div>
                   <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ background: "#F1F5F9" }}>
@@ -302,11 +299,7 @@ export default function HeroSection() {
 
                 {/* Mini stats */}
                 <div className="grid grid-cols-3 gap-2.5 mb-4">
-                  {[
-                    { label: "Теория",      value: "28 ч",  done: true  },
-                    { label: "Практика",    value: "8/10",  done: false },
-                    { label: "До экзамена", value: "2 нед", done: false },
-                  ].map((s) => (
+                  {h.card.mini.map((s) => (
                     <div key={s.label} className="flex flex-col items-center py-3 rounded-2xl"
                       style={{
                         background: s.done ? "rgba(22,163,74,0.05)" : "rgba(248,250,252,0.8)",
@@ -329,8 +322,8 @@ export default function HeroSection() {
                   <div className="w-1.5 h-1.5 rounded-full animate-pulse shrink-0"
                     style={{ background: RED }} />
                   <p className="text-xs font-medium" style={{ color: "#334155" }}>
-                    Следующее занятие —{" "}
-                    <span style={{ color: RED, fontWeight: 700 }}>завтра в 10:00</span>
+                    {h.card.nextLesson}{" "}
+                    <span style={{ color: RED, fontWeight: 700 }}>{h.card.nextTime}</span>
                   </p>
                 </div>
               </motion.div>
@@ -351,13 +344,9 @@ export default function HeroSection() {
                 }}
               >
                 <p className="text-[10px] font-bold uppercase tracking-widest mb-4"
-                  style={{ color: "#CBD5E1" }}>Путь обучения</p>
+                  style={{ color: "#CBD5E1" }}>{h.card.pathLabel}</p>
                 <div className="flex items-center">
-                  {[
-                    { label: "Теория",   sub: "Пройдена", done: true,  active: false },
-                    { label: "Практика", sub: "8 из 10",  done: false, active: true  },
-                    { label: "Экзамен",  sub: "Впереди",  done: false, active: false },
-                  ].map((step, i) => (
+                  {h.card.steps.map((step, i) => (
                     <div key={step.label} className="flex items-center flex-1">
                       <div className="flex flex-col items-center flex-1">
                         <div className="w-9 h-9 rounded-full flex items-center justify-center mb-2"
@@ -417,8 +406,8 @@ export default function HeroSection() {
                 </div>
                 <div>
                   <p className="text-[9px] font-medium uppercase tracking-wider"
-                    style={{ color: "#CBD5E1" }}>Результат</p>
-                  <p className="text-xs font-bold" style={{ color: "#0F172A" }}>100% сдают ПДД</p>
+                    style={{ color: "#CBD5E1" }}>{h.badges.result}</p>
+                  <p className="text-xs font-bold" style={{ color: "#0F172A" }}>{h.badges.resultValue}</p>
                 </div>
               </motion.div>
             </motion.div>
@@ -449,8 +438,8 @@ export default function HeroSection() {
                 </div>
                 <div>
                   <p className="text-[9px] font-medium uppercase tracking-wider"
-                    style={{ color: "#CBD5E1" }}>Трансмиссия</p>
-                  <p className="text-xs font-bold" style={{ color: "#0F172A" }}>Автомат / механика</p>
+                    style={{ color: "#CBD5E1" }}>{h.badges.trans}</p>
+                  <p className="text-xs font-bold" style={{ color: "#0F172A" }}>{h.badges.transValue}</p>
                 </div>
               </motion.div>
             </motion.div>
@@ -481,8 +470,8 @@ export default function HeroSection() {
                 </div>
                 <div>
                   <p className="text-[9px] font-medium uppercase tracking-wider"
-                    style={{ color: "#CBD5E1" }}>Лицензия МВД РК</p>
-                  <p className="text-xs font-bold" style={{ color: "#0F172A" }}>ДП № 00862</p>
+                    style={{ color: "#CBD5E1" }}>{h.badges.license}</p>
+                  <p className="text-xs font-bold" style={{ color: "#0F172A" }}>{h.badges.licenseValue}</p>
                 </div>
               </motion.div>
             </motion.div>
