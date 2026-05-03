@@ -168,46 +168,22 @@ export default function RegistrationForm() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.4, ease: "easeOut" }}
-                className="relative text-center py-10 overflow-hidden"
+                className="text-center py-12"
               >
-                <Confetti />
-                <div className="relative z-10">
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: [0, 1.2, 1] }}
-                    transition={{ duration: 0.5, delay: 0.1 }}
-                    className="text-5xl mb-5 select-none"
-                  >
-                    🎉
-                  </motion.div>
-                  <h3 className="text-2xl font-black mb-2" style={{ color: "#111827" }}>{f.successTitle}</h3>
-                  <p className="text-base font-semibold mb-1" style={{ color: "#374151" }}>
-                    {f.successLine1}
-                  </p>
-                  <p className="text-sm mb-8" style={{ color: "#9CA3AF" }}>
-                    {f.successLine2}
-                  </p>
-                  <div
-                    className="inline-block text-left px-5 py-4 rounded-2xl mb-6 space-y-1.5"
-                    style={{ background: "#F9FAFB", border: "1px solid #F1F5F9" }}
-                  >
-                    <p className="text-sm" style={{ color: "#6B7280" }}>
-                      <span className="font-semibold" style={{ color: "#111827" }}>{f.successBranch}</span> {form.branch}
-                    </p>
-                    <p className="text-sm" style={{ color: "#6B7280" }}>
-                      <span className="font-semibold" style={{ color: "#111827" }}>{f.successFormat}</span>{" "}
-                      {f.formats.find((fmt) => fmt.value === form.format)?.label}
-                    </p>
-                  </div>
-                  <br />
-                  <button
-                    onClick={() => { setSent(false); setForm({ name: "", phone: "", branch: "", format: "" }); }}
-                    className="text-sm font-semibold underline underline-offset-2"
-                    style={{ color: "#E11D48" }}
-                  >
-                    {f.anotherRequest}
-                  </button>
-                </div>
+                <div className="text-5xl mb-6 select-none">✅</div>
+                <h3 className="text-xl font-black mb-3" style={{ color: "#111827" }}>
+                  {f.successTitle}
+                </h3>
+                <p className="text-sm" style={{ color: "#9CA3AF" }}>
+                  {f.successLine1}
+                </p>
+                <button
+                  onClick={() => { setSent(false); setForm({ name: "", phone: "", branch: "", format: "" }); }}
+                  className="mt-8 text-sm font-semibold underline underline-offset-2"
+                  style={{ color: "#E11D48" }}
+                >
+                  {f.anotherRequest}
+                </button>
               </motion.div>
             ) : (
               /* ── Form ── */
