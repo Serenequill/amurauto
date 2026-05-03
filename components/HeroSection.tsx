@@ -221,8 +221,8 @@ export default function HeroSection() {
           </div>
 
           {/* ══ RIGHT — Premium cards (шире на ~10%) ══ */}
-          <div className="max-lg:hidden lg:flex col-span-12 lg:col-span-6 items-center justify-center relative"
-            style={{ minHeight: "580px" }}>
+          <div className="flex col-span-12 lg:col-span-6 items-center justify-center relative overflow-hidden lg:overflow-visible"
+            style={{ minHeight: "auto" }}>
 
             <div className="flex flex-col gap-4 w-full max-w-[415px]">
 
@@ -382,6 +382,7 @@ export default function HeroSection() {
 
             {/* Floating badge — 100% ПДД */}
             <motion.div
+              className="max-lg:hidden"
               initial={{ opacity: 0, x: -20, y: 10 }}
               animate={{ opacity: 1, x: 0, y: 0 }}
               transition={{ duration: 0.6, delay: 0.9, ease: [0.22, 1, 0.36, 1] }}
@@ -414,6 +415,7 @@ export default function HeroSection() {
 
             {/* Floating badge — Трансмиссия */}
             <motion.div
+              className="max-lg:hidden"
               initial={{ opacity: 0, x: 20, y: 10 }}
               animate={{ opacity: 1, x: 0, y: 0 }}
               transition={{ duration: 0.6, delay: 1.05, ease: [0.22, 1, 0.36, 1] }}
@@ -446,6 +448,7 @@ export default function HeroSection() {
 
             {/* Floating badge — Лицензия (новый, держит вес правой части) */}
             <motion.div
+              className="max-lg:hidden"
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 1.2, ease: [0.22, 1, 0.36, 1] }}
