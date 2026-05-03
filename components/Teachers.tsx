@@ -15,7 +15,7 @@ const TEACHERS_BASE = [
   {
     name:       "Еременко Наталья Викторовна",
     experience: 5,
-    photo:      "/teachers/IMG_3898.JPEG",
+    photo:      "/teachers/teacher_natalia.jpg",
   },
 ];
 
@@ -38,20 +38,18 @@ function TeacherCard({
   const [hovered, setHovered] = useState(false);
 
   return (
-    <motion.div
-      onHoverStart={() => setHovered(true)}
-      onHoverEnd={() => setHovered(false)}
-      animate={{
-        boxShadow: hovered
-          ? "0 32px 80px rgba(225,29,72,0.55), 0 8px 32px rgba(225,29,72,0.3)"
-          : "0 16px 48px rgba(225,29,72,0.3), 0 4px 20px rgba(0,0,0,0.25)",
-      }}
-      transition={{ duration: 0.3 }}
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       className="relative flex flex-col shrink-0 overflow-hidden"
       style={{
         borderRadius: "3.5rem",
         width: `${CARD_W}px`,
         background: "#E11D48",
+        boxShadow: hovered
+          ? "0 32px 80px rgba(225,29,72,0.55), 0 8px 32px rgba(225,29,72,0.3)"
+          : "0 16px 48px rgba(225,29,72,0.3), 0 4px 20px rgba(0,0,0,0.25)",
+        transition: "box-shadow 0.3s ease",
       }}
     >
       {/* Photo */}
@@ -111,7 +109,7 @@ function TeacherCard({
           </p>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 }
 
