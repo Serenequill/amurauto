@@ -178,7 +178,7 @@ export default function Awards() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: i * 0.08 }}
-                className="flex flex-col items-center justify-center text-center p-6 sm:p-8"
+                className="flex flex-col items-center justify-center text-center p-3 sm:p-6 lg:p-8"
                 style={{
                   background: "#FFFFFF",
                   borderRadius: "1.75rem",
