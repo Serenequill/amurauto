@@ -137,7 +137,27 @@ export default function Navbar() {
           </div>
 
           {/* ── Mobile controls ── */}
-          <div className="md:hidden flex items-center gap-3">
+          <div className="md:hidden flex items-center gap-2">
+            {/* Lang switcher */}
+            <div
+              className="flex items-center rounded-full p-0.5"
+              style={{ background: "#F3F4F6", border: "1px solid #E5E7EB" }}
+            >
+              {(["ru", "kz"] as const).map((l) => (
+                <button
+                  key={l}
+                  onClick={() => setLang(l)}
+                  className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider transition-all duration-200"
+                  style={{
+                    background: lang === l ? "#E11D48" : "transparent",
+                    color:      lang === l ? "#FFFFFF" : "#9CA3AF",
+                  }}
+                >
+                  {l.toUpperCase()}
+                </button>
+              ))}
+            </div>
+
             <a
               href="tel:87776667096"
               className="w-9 h-9 flex items-center justify-center rounded-full text-white transition-all hover:scale-105"
