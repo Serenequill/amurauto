@@ -245,8 +245,14 @@ function BranchCard({
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}
-                className="inline-flex items-center gap-1.5 text-xs font-semibold"
-                style={{ color: "#DC2626" }}
+                className="inline-flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-full transition-all"
+                style={{
+                  background: "#E11D48",
+                  color: "#fff",
+                  boxShadow: "0 4px 14px rgba(225,29,72,0.35)",
+                }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "#BE123C"; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "#E11D48"; }}
               >
                 <ExternalLink size={11} />
                 {openIn2Gis}
@@ -444,8 +450,8 @@ export default function BranchesSection() {
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
-                      className="inline-flex items-center gap-1 text-xs font-semibold mt-2 pt-2"
-                      style={{ color: "#DC2626", borderTop: "1px solid #F1F5F9", display: "flex" }}
+                      className="inline-flex items-center gap-1.5 text-xs font-bold mt-2 px-3 py-1.5 rounded-full transition-all"
+                      style={{ background: "#E11D48", color: "#fff", boxShadow: "0 3px 10px rgba(225,29,72,0.3)" }}
                     >
                       <ExternalLink size={10} />
                       {b.openIn2Gis}
