@@ -221,7 +221,7 @@ export default function HeroSection() {
           </div>
 
           {/* ══ RIGHT — Premium cards (шире на ~10%) ══ */}
-          <div className="hidden lg:flex col-span-12 lg:col-span-6 items-center justify-center relative"
+          <div className="max-lg:hidden lg:flex col-span-12 lg:col-span-6 items-center justify-center relative"
             style={{ minHeight: "580px" }}>
 
             <div className="flex flex-col gap-4 w-full max-w-[415px]">
