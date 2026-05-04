@@ -24,6 +24,8 @@ export default function Home() {
       <RoadDivider />
       <BranchesSection />
       <RoadDivider />
+      <GroupSchedule />
+      <RoadDivider />
       <Pricing />
       <RoadDivider />
       <Installments />
@@ -38,8 +40,6 @@ export default function Home() {
       <Reviews />
       <RoadDivider />
       <FAQ />
-      <RoadDivider />
-      <GroupSchedule />
       <RoadDivider />
       <RegistrationForm />
     </>
