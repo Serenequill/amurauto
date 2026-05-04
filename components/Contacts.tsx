@@ -6,10 +6,13 @@ import SmartMap from "./SmartMap";
 
 export default function Contacts() {
   const [form, setForm] = useState({ name: "", phone: "", message: "" });
+  const [honeypot, setHoneypot] = useState("");
   const [sent, setSent] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    // Honeypot: если бот заполнил скрытое поле — тихо игнорируем
+    if (honeypot) return;
     if (!form.name.trim() || !form.phone.trim()) return;
     const text = encodeURIComponent(
       `Здравствуйте! Хочу записаться на обучение.\n\n` +
@@ -112,6 +115,17 @@ export default function Contacts() {
                 border: "1px solid rgba(204,255,0,0.1)",
               }}
             >
+              {/* Honeypot — скрыто от людей, боты заполняют */}
+              <input
+                type="text"
+                name="website"
+                value={honeypot}
+                onChange={(e) => setHoneypot(e.target.value)}
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                style={{ position: "absolute", left: "-9999px", opacity: 0, pointerEvents: "none" }}
+              />
               <div>
                 <label
                   className="text-sm mb-1.5 block"
