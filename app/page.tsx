@@ -11,7 +11,7 @@ import Teachers from "@/components/Teachers";
 import Reviews from "@/components/Reviews";
 import FAQ from "@/components/FAQ";
 import RegistrationForm from "@/components/RegistrationForm";
-import GroupsSection from "@/components/GroupsSection";
+import GroupSchedule from "@/components/GroupSchedule";
 import RoadDivider from "@/components/RoadDivider";
 
 export default function Home() {
@@ -39,7 +39,7 @@ export default function Home() {
       <RoadDivider />
       <FAQ />
       <RoadDivider />
-      <GroupsSection />
+      <GroupSchedule />
       <RoadDivider />
       <RegistrationForm />
     </>
