@@ -119,7 +119,6 @@ function MapBlock({
           src={mapSrc}
           width="100%"
           height="100%"
-          loading="lazy"
           onLoad={() => setLoading(false)}
           style={{
             border: "none",
