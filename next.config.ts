@@ -24,8 +24,8 @@ const securityHeaders = [
       "img-src 'self' data: blob: https:",
       // Шрифты: свой домен
       "font-src 'self' data:",
-      // Фреймы: только 2GIS для карты
-      "frame-src 'self' https://yandex.ru https://2gis.kz https://maps.2gis.com",
+      // Фреймы: Яндекс карты + 2GIS
+      "frame-src 'self' https://yandex.ru https://yandex.kz https://yandex.com https://2gis.kz https://maps.2gis.com https://widgets.2gis.com",
       // Соединения: WhatsApp API, Vercel
       "connect-src 'self' https://wa.me https://api.whatsapp.com https://vitals.vercel-insights.com https://vercel.live",
       // Медиа: свой домен
