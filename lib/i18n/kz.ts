@@ -313,6 +313,35 @@ const kz: Dict = {
     ],
   },
 
+  groups: {
+    tag:           "Топ жинақтау",
+    title:         "Ашық топтар",
+    subtitle:      "Өзекті кесте — деректер автоматты түрде жаңартылады",
+    tabOffline:    "Оффлайн",
+    tabOnline:     "Қашықтан",
+    tabWeekend:    "Демалыс күні",
+    allFilter:     "Барлығы",
+    langRU:        "Орысша",
+    langKZ:        "Қазақша",
+    startDate:     "Топ басталуы",
+    morning:       "Таңертең",
+    evening:       "Кешке",
+    days:          "Күндер",
+    branch:        "Филиал",
+    enroll:        "Жазылу",
+    noGroups:      "Жақын арада топтар жоқ",
+    noGroupsSub:   "Бірақ жеке кесте таңдауға көмектесе аламыз",
+    contact:       "WhatsApp арқылы хабарласу",
+    loading:       "Кесте жүктелуде…",
+    error:         "Кестені жүктеу мүмкін болмады",
+    retry:         "Қайталап көру",
+    waMsg: (branch: string, lang: string, format: string, date: string, days: string, morning: string, evening: string) => {
+      const times = [morning && `таң ${morning}`, evening && `кеш ${evening}`].filter(Boolean).join(", ");
+      return `Сәлеметсіз бе! Топқа жазылғым келеді: ${branch} филиалы, тіл: ${lang}, формат: ${format}, басталуы: ${date}, күндер: ${days}${times ? `, ${times}` : ""}`;
+    },
+    waMsgContact: "Сәлеметсіз бе! Топтардың кестесін білгім келеді. Жеке кесте таңдауға көмектесе аласыз ба?",
+  },
+
   footer: {
     desc:         "Алматыдағы кәсіби автомектеп. 6 филиал, B категориясы, 100% ЖҚЕ тапсыру.",
     navTitle:     "Навигация",

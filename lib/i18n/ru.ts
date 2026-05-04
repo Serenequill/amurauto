@@ -315,6 +315,35 @@ const ru = {
     dotLabel:    (n: number) => `Отзыв ${n}`,
   },
 
+  groups: {
+    tag:           "Набор групп",
+    title:         "Открытые группы",
+    subtitle:      "Актуальное расписание — данные обновляются автоматически",
+    tabOffline:    "Оффлайн",
+    tabOnline:     "Дистанционно",
+    tabWeekend:    "Выходного дня",
+    allFilter:     "Все",
+    langRU:        "Рус",
+    langKZ:        "Каз",
+    startDate:     "Старт группы",
+    morning:       "Утро",
+    evening:       "Вечер",
+    days:          "Дни",
+    branch:        "Филиал",
+    enroll:        "Записаться",
+    noGroups:      "На ближайшее время групп нет",
+    noGroupsSub:   "Но мы можем подобрать индивидуальный график",
+    contact:       "Связаться в WhatsApp",
+    loading:       "Загружаем расписание…",
+    error:         "Не удалось загрузить расписание",
+    retry:         "Попробовать снова",
+    waMsg: (branch: string, lang: string, format: string, date: string, days: string, morning: string, evening: string) => {
+      const times = [morning && `утро ${morning}`, evening && `вечер ${evening}`].filter(Boolean).join(", ");
+      return `Здравствуйте! Хочу записаться в группу: Филиал ${branch}, язык ${lang}, формат ${format}, старт ${date}, дни ${days}${times ? `, ${times}` : ""}`;
+    },
+    waMsgContact: "Здравствуйте! Хочу уточнить расписание групп. Можете помочь с подбором?",
+  },
+
   footer: {
     desc:         "Профессиональная автошкола в Алматы. 6 филиалов, категория B, 100% сдача ПДД.",
     navTitle:     "Навигация",

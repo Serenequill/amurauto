@@ -26,8 +26,8 @@ const securityHeaders = [
       "font-src 'self' data:",
       // Фреймы: Яндекс карты + 2GIS
       "frame-src 'self' https://yandex.ru https://yandex.kz https://yandex.com https://2gis.kz https://maps.2gis.com https://widgets.2gis.com",
-      // Соединения: WhatsApp API, Vercel
-      "connect-src 'self' https://wa.me https://api.whatsapp.com https://vitals.vercel-insights.com https://vercel.live",
+      // Соединения: WhatsApp, Vercel, Google Sheets (серверный fetch — CSP не нужен, но на всякий случай)
+      "connect-src 'self' https://wa.me https://api.whatsapp.com https://vitals.vercel-insights.com https://vercel.live https://docs.google.com",
       // Медиа: свой домен
       "media-src 'self'",
       // Объекты: запрещены полностью
