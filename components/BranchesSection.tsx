@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Phone, ExternalLink, Clock, Navigation, ChevronLeft, ChevronRight } from "lucide-react";
 import { useLang } from "@/contexts/LangContext";
@@ -68,7 +68,6 @@ function getBranchSrc(b: Branch) {
 /* ─── Map block ─── */
 function MapBlock({
   activeBranch,
-  mapKey,
   mapSrc,
   height,
   overviewLabel,
@@ -76,13 +75,17 @@ function MapBlock({
   mapTitleBranch,
 }: {
   activeBranch: Branch | undefined;
-  mapKey: string | number;
   mapSrc: string;
   height: string;
   overviewLabel: string;
   mapTitleAll: string;
   mapTitleBranch: (name: string) => string;
 }) {
+  const [loading, setLoading] = useState(true);
+
+  // Показываем скелетон при смене филиала, но НЕ перемонтируем iframe
+  useEffect(() => { setLoading(true); }, [mapSrc]);
+
   const coords = activeBranch
     ? `${activeBranch.lat.toFixed(4)}°N · ${activeBranch.lng.toFixed(4)}°E`
     : `43.2567°N · 76.9286°E`;
@@ -99,25 +102,34 @@ function MapBlock({
           background: "#F9FAFB",
         }}
       >
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={String(mapKey)}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.35, ease: "easeInOut" }}
-            className="absolute inset-0"
-          >
-            <iframe
-              src={mapSrc}
-              width="100%"
-              height="100%"
-              style={{ border: "none", display: "block" }}
-              allowFullScreen
-              title={activeBranch ? mapTitleBranch(activeBranch.name) : mapTitleAll}
+        {/* Скелетон-загрузка */}
+        {loading && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-10"
+               style={{ background: "#F9FAFB" }}>
+            <div
+              className="w-9 h-9 rounded-full border-[3px] border-t-transparent animate-spin"
+              style={{ borderColor: "rgba(225,29,72,0.2)", borderTopColor: "#E11D48" }}
             />
-          </motion.div>
-        </AnimatePresence>
+            <span className="text-xs font-medium" style={{ color: "#9CA3AF" }}>Загрузка карты…</span>
+          </div>
+        )}
+
+        {/* iframe — src меняется, но элемент НЕ пересоздаётся */}
+        <iframe
+          src={mapSrc}
+          width="100%"
+          height="100%"
+          loading="lazy"
+          onLoad={() => setLoading(false)}
+          style={{
+            border: "none",
+            display: "block",
+            opacity: loading ? 0 : 1,
+            transition: "opacity 0.4s ease",
+          }}
+          allowFullScreen
+          title={activeBranch ? mapTitleBranch(activeBranch.name) : mapTitleAll}
+        />
       </div>
 
       {/* Decorative coordinates */}
@@ -275,7 +287,6 @@ export default function BranchesSection() {
 
   const activeBranch = BRANCHES.find((b) => b.id === activeId);
   const mapSrc = activeBranch ? getBranchSrc(activeBranch) : OVERVIEW_SRC;
-  const mapKey = activeId ?? "overview";
 
   const select = (id: number) => {
     setActiveId((prev) => (prev === id ? null : id));
@@ -288,7 +299,7 @@ export default function BranchesSection() {
   };
 
   const mapProps = {
-    activeBranch, mapKey, mapSrc,
+    activeBranch, mapSrc,
     overviewLabel:  b.overviewLabel,
     mapTitleAll:    b.mapTitleAll,
     mapTitleBranch: b.mapTitleBranch,
