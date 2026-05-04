@@ -30,7 +30,7 @@ export default function HeroSection() {
   return (
     <section
       id="hero"
-      className="relative lg:min-h-screen flex items-center overflow-hidden pt-16"
+      className="relative lg:min-h-screen flex items-center overflow-hidden pt-[100px]"
       style={{ background: "linear-gradient(160deg, #ffffff 0%, #faf9f7 55%, #fdf5f7 100%)" }}
     >
       {/* Dot grid */}

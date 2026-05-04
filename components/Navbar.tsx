@@ -39,8 +39,9 @@ export default function Navbar() {
 
   return (
     <header
-      className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+      className="fixed left-0 right-0 z-50 transition-all duration-300"
       style={{
+        top: "36px",
         background: "rgba(255,255,255,0.92)",
         backdropFilter: "blur(16px)",
         WebkitBackdropFilter: "blur(16px)",

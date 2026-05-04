@@ -311,13 +311,15 @@ function Pill({
    Main
 ───────────────────────────────────────── */
 export default function GroupSchedule() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const g = t.groups;
 
   const [groups,  setGroups]  = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
   const [selFmt,  setSelFmt]  = useState<FormatT | "all">("all");
-  const [selLang, setSelLang] = useState<"all" | "RU" | "KZ">("all");
+
+  // Язык привязан к глобальному переключателю сайта
+  const siteLang: "RU" | "KZ" = lang === "kz" ? "KZ" : "RU";
 
   useEffect(() => {
     fetch("/api/groups")
@@ -327,10 +329,10 @@ export default function GroupSchedule() {
       .finally(() => setLoading(false));
   }, []);
 
-  /* ── Filtered list ── */
+  /* ── Filtered list — язык из глобального переключателя ── */
   const filtered = groups.filter((gr) => {
-    if (selFmt  !== "all" && gr.format !== selFmt)  return false;
-    if (selLang !== "all" && gr.lang   !== selLang) return false;
+    if (selFmt !== "all" && gr.format !== selFmt) return false;
+    if (gr.lang !== siteLang) return false;
     return true;
   });
 
@@ -387,23 +389,17 @@ export default function GroupSchedule() {
               />
             ))}
 
-            {/* divider */}
+            {/* Текущий язык — информационный бейдж */}
             <div className="w-px mx-1 self-stretch" style={{ background: "#E2E8F0" }} />
-
-            {/* Lang row inline */}
-            {(["all", "RU", "KZ"] as const).map((l) => (
-              <Pill
-                key={l}
-                label={l === "all" ? g.allFilter : l === "RU" ? g.langRU : g.langKZ}
-                active={selLang === l}
-                color={
-                  l === "RU" ? { bg: "#1D4ED8", text: "#FFF" } :
-                  l === "KZ" ? { bg: "#065F46", text: "#FFF" } :
-                               { bg: "#0F172A", text: "#FFF" }
-                }
-                onClick={() => setSelLang(l)}
-              />
-            ))}
+            <span
+              className="px-4 py-2 rounded-2xl text-xs font-bold"
+              style={{
+                background: siteLang === "RU" ? "#1D4ED8" : "#065F46",
+                color: "#FFF",
+              }}
+            >
+              {siteLang === "RU" ? g.langRU : g.langKZ}
+            </span>
           </div>
         </div>
 

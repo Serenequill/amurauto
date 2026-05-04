@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/app/providers";
 import Navbar from "@/components/Navbar";
+import TopBar from "@/components/TopBar";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import ScrollProgress from "@/components/ScrollProgress";
@@ -40,6 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ru" className={`${inter.variable} scroll-smooth`}>
       <body className="min-h-screen flex flex-col" style={{ background: "#FFFFFF", color: "#111827", fontFamily: "var(--font-inter), sans-serif" }}>
         <Providers>
+          <TopBar />
           <ScrollProgress />
           <Navbar />
           <main className="flex-1">{children}</main>
