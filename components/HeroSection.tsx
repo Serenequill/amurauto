@@ -132,6 +132,52 @@ export default function HeroSection() {
               </span>
             </motion.div>
 
+            {/* ── МАЙСКАЯ АКЦИЯ ── */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.32 }}
+              className="mb-8 max-w-[480px]"
+            >
+              <div
+                className="relative overflow-hidden rounded-2xl px-5 py-4"
+                style={{
+                  background: "linear-gradient(135deg, #7D0E2D 0%, #C41E3A 50%, #E11D48 100%)",
+                  boxShadow: "0 4px 24px rgba(158,18,57,0.35), inset 0 1px 0 rgba(255,255,255,0.12)",
+                }}
+              >
+                {/* shimmer */}
+                <motion.div
+                  animate={{ x: ["-100%", "200%"] }}
+                  transition={{ duration: 2.2, repeat: Infinity, repeatDelay: 3, ease: "easeInOut" }}
+                  style={{
+                    position: "absolute", top: 0, bottom: 0, width: "40%",
+                    background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)",
+                    pointerEvents: "none",
+                  }}
+                />
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-[10px] font-black uppercase tracking-widest"
+                        style={{ color: "rgba(255,255,255,0.65)", letterSpacing: "0.16em" }}>
+                        ❗ МАЙСКАЯ АКЦИЯ
+                      </span>
+                    </div>
+                    <p className="font-black text-white mb-1"
+                      style={{ fontSize: "1.35rem", letterSpacing: "-0.02em", lineHeight: 1.2 }}>
+                      Скидка <span style={{ fontSize: "1.6rem" }}>40 000 ₸</span>
+                    </p>
+                    <p className="text-xs" style={{ color: "rgba(255,255,255,0.75)", lineHeight: 1.5 }}>
+                      На все форматы и пакеты обучения.{" "}
+                      <span style={{ color: "#FFD700", fontWeight: 700 }}>Торопитесь — акция до конца мая!</span>
+                    </p>
+                  </div>
+                  <div className="shrink-0 text-3xl">🎁</div>
+                </div>
+              </div>
+            </motion.div>
+
             {/* ── CTA — с внутренним бликом ── */}
             <motion.div
               initial={{ opacity: 0, y: 14 }}
